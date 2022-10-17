@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.179">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Daniel Daza Macias">
+<meta name="author" content="Daniel Santiago Cadavid Montoya">
+<meta name="author" content="Jose Daniel Bustamante Arango">
+<meta name="author" content="Marlon Calle Areiza">
+<meta name="author" content="Ronald Gabriel Palencia">
+
+<title>Creacion ScoreCard</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="blog_files/libs/clipboard/clipboard.min.js"></script>
+<script src="blog_files/libs/quarto-html/quarto.js"></script>
+<script src="blog_files/libs/quarto-html/popper.min.js"></script>
+<script src="blog_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="blog_files/libs/quarto-html/anchor.min.js"></script>
+<link href="blog_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="blog_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="blog_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="blog_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="blog_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="blog_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="blog_files/libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a></li>
+  <li><a href="#importe-y-análisis-de-datos" id="toc-importe-y-análisis-de-datos" class="nav-link" data-scroll-target="#importe-y-análisis-de-datos">Importe y análisis de datos</a>
+  <ul class="collapse">
+  <li><a href="#selección-y-transformación-de-variables" id="toc-selección-y-transformación-de-variables" class="nav-link" data-scroll-target="#selección-y-transformación-de-variables">Selección y transformación de variables</a></li>
+  </ul></li>
+  <li><a href="#selección-de-variables-a-partir-de-woe-y-valor-de-información-iv" id="toc-selección-de-variables-a-partir-de-woe-y-valor-de-información-iv" class="nav-link" data-scroll-target="#selección-de-variables-a-partir-de-woe-y-valor-de-información-iv">Selección de variables a partir de WoE y Valor de Información (IV)</a>
+  <ul class="collapse">
+  <li><a href="#selección-de-variables" id="toc-selección-de-variables" class="nav-link" data-scroll-target="#selección-de-variables">Selección de variables</a></li>
+  </ul></li>
+  <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias">Referencias</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Creacion ScoreCard</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Daniel Daza Macias </p>
+             <p>Daniel Santiago Cadavid Montoya </p>
+             <p>Jose Daniel Bustamante Arango </p>
+             <p>Marlon Calle Areiza </p>
+             <p>Ronald Gabriel Palencia </p>
+          </div>
+  </div>
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="introducción" class="level2">
+<h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
+<p>El siguiente trabajo tiene como objetivo la realización de una scorecard que ubique a las personas en un punto de [TODO]</p>
+<p>Para realizar utilizamos la base de datos proporcionada por <span class="citation" data-cites="DataWebsite">U.S. Department of Education (<a href="#ref-DataWebsite" role="doc-biblioref">2016</a>)</span>.</p>
+</section>
+<section id="importe-y-análisis-de-datos" class="level2">
+<h2 class="anchored" data-anchor-id="importe-y-análisis-de-datos">Importe y análisis de datos</h2>
+<p>Para comenzar se hará un cargue del conjunto de datos:</p>
+<div class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div id="tbl-import-presentacion-inicial" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;1:  Datos iniciales </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>id</th>
+      <th>member_id</th>
+      <th>...</th>
+      <th>total_cu_tl</th>
+      <th>inq_last_12m</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1077501</td>
+      <td>1296599</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1077430</td>
+      <td>1314167</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1077175</td>
+      <td>1313524</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1076863</td>
+      <td>1277178</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1075358</td>
+      <td>1311748</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 74 columns</p>
+</div>
+</div>
+</div>
+</div>
+<p>Como se puede ver en <a href="#tbl-import-presentacion-inicial">Table&nbsp;1</a> la base de datos contiene 74 columnas además de 466285 observaciones.</p>
+<p>Por otra parte nuestra variable de interés será loan_status o estado del prestamo de cada observación que tiene entre posibles valores: ‘Fully Paid’, ‘Charged Off’, ‘Current’, ‘Default’, ‘Late (31-120 days)’,‘In Grace Period’, ‘Late (16-30 days)’, ‘Does not meet the credit policy. Status:Fully Paid’ y ‘Does not meet the credit policy. Status:Charged Off’. Así y como nuestro objetivo parte de la clasificación en dos grupos partiremos de esta variable para otorgar a cada observación el valor de: incumplió con obligaciones financieras (0 en la nueva columna creada ‘Obligaciones_financieras’) o cumplió con las obligaciones financieras(1 en la nueva columna creada ‘Obligaciones_financieras’), el primero siendo equivalente a los valores ‘Charged Off’, ‘Default’, ‘Late (31-120 days)’ y ‘Does not meet the credit policy. Status:Charged Off’ en ‘loan_status’.</p>
+<section id="selección-y-transformación-de-variables" class="level3">
+<h3 class="anchored" data-anchor-id="selección-y-transformación-de-variables">Selección y transformación de variables</h3>
+<p>Para comenzar a seleccionar variables y como nuestro interés de acuerdo al objetivo es tener la mayor cantidad de datos sin imputar obviaremos para el ajuste del modelo aquellas cuya cantidad de datos nulos sea mayor al 70%, dichas variables se pueden ver en <a href="#tbl-variables-nulos">Table&nbsp;2</a></p>
+<div class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="18">
+<div id="tbl-variables-nulos" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Table&nbsp;2: Variables con porcentaje de nulo mayor al 30%</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: right;">Porcentaje de datos nulos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">desc</td>
+<td style="text-align: right;">0.729815</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mths_since_last_record</td>
+<td style="text-align: right;">0.865666</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mths_since_last_major_derog</td>
+<td style="text-align: right;">0.787739</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">annual_inc_joint</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dti_joint</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">verification_status_joint</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">open_acc_6m</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">open_il_6m</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">open_il_12m</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">open_il_24m</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mths_since_rcnt_il</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">total_bal_il</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">il_util</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">open_rv_12m</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">open_rv_24m</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">max_bal_bc</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">all_util</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">inq_fi</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">total_cu_tl</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">inq_last_12m</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Además de esto eliminaremos las variables: ‘id’, ‘member_id’, ‘sub_grade’, ‘emp_title’, ‘url’, ‘title’, ‘zip_code’, ‘next_pymnt_d’, ‘recoveries’, ‘collection_recovery_fee’, ‘total_rec_prncp’, ‘total_rec_late_fee’ y ‘policy_code’, que consideramos no aportan mucha información a la hora de definir las obligaciones económicas de una persona.</p>
+<p>Procederemos a realizar una matriz de correlación de Pearson para ver qué variables podrían ser explicadas por otras y obviarlas:</p>
+<div id="fig-matriz-corr-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="fig_1_corr_pearson.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Matriz de correlacion</figcaption><p></p>
+</figure>
+</div>
+<p>Así y de acuerdo <a href="#fig-matriz-corr-1">Figure&nbsp;1</a> se eliminarán aquellas columnas que posean un correlación de al menos 60% es decir las variables: ‘total_rec_int’, ‘total_pymnt_inv’, ‘total_pymnt’, ‘installment’, ‘funded_amnt’, ‘funded_amnt_inv’, ‘out_prncp_inv’, ‘total_acc’ y ‘total_rev_hi_lim’.</p>
+<p>Al final resultaríamos con las variables encontradas en <a href="#tbl-variables-resultantes">Table&nbsp;3</a>, donde aquellas de tipo object son las que reconoceremos como categóricas para posterior análisis y transformación:</p>
+<div class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div id="tbl-variables-resultantes" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Table&nbsp;3: Variables resultantes y tipos</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Porcentaje de datos nulos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">loan_amnt</td>
+<td style="text-align: left;">int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">term</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">int_rate</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">grade</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">emp_length</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">home_ownership</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">annual_inc</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">verification_status</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">issue_d</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">loan_status</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pymnt_plan</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">purpose</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">addr_state</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">dti</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">delinq_2yrs</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">earliest_cr_line</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">inq_last_6mths</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mths_since_last_delinq</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">open_acc</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pub_rec</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">revol_bal</td>
+<td style="text-align: left;">int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">revol_util</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">initial_list_status</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">out_prncp</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">last_pymnt_d</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">last_pymnt_amnt</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">last_credit_pull_d</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">collections_12_mths_ex_med</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">application_type</td>
+<td style="text-align: left;">object</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">acc_now_delinq</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tot_coll_amt</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tot_cur_bal</td>
+<td style="text-align: left;">float64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Obligaciones_financieras</td>
+<td style="text-align: left;">int32</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<section id="transformación-de-variables-categóricas" class="level4">
+<h4 class="anchored" data-anchor-id="transformación-de-variables-categóricas">Transformación de variables categóricas</h4>
+<p>Para comenzar cambiaremos los valores categóricos de la variable emp_length por la cantidad de años como se puede observar en <a href="#tbl-cam-var-1">Table&nbsp;4</a>.</p>
+<div class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="21">
+<div id="tbl-cam-var-1" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Table&nbsp;4: Cambio en variable emp_length</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Valor</th>
+<th style="text-align: right;">Nuevo valor</th>
+<th style="text-align: right;">Cantidad de datos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">10+ years</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">150049</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2 years</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">41373</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3 years</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">36596</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">36265</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5 years</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">30774</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1 year</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">29622</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4 years</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">28023</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">7 years</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">26180</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">6 years</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">26112</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8 years</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">22395</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9 years</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">17888</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Continuando, se pasará a eliminar la columna ‘pymnt_plan’ ya que solo tiene el 0.0019% de valores en yes frente al resto de no como se puede ver en <a href="#tbl-cam-var-2">Table&nbsp;5</a> por lo que no la consideraremos como muy aportante al modelo.</p>
+<div class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="22">
+<div id="tbl-cam-var-2" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Table&nbsp;5: Eliminación variable pymnt_plan</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Valor</th>
+<th style="text-align: right;">Cantidad de datos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">n</td>
+<td style="text-align: right;">466276</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">y</td>
+<td style="text-align: right;">9</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Además, se eliminarán las variables ‘last_pymnt_d’, ‘last_credit_pull_d’, ‘earliest_cr_line’, ‘issue_d’, ‘addr_state’, ‘initial_list_status’ y ‘mths_since_last_delinq’, que contienen fechas y no se consideran suficiente aportantes para el modelo.</p>
+<p>Para terminar se eliminarán también las columnas ‘application_type’, pues sólo existe un único valor que comparten todas las observaciones y ‘loan_status’, que es la variable de la que partimos para establecer nuestra variable objetivo.</p>
+</section>
+</section>
+</section>
+<section id="selección-de-variables-a-partir-de-woe-y-valor-de-información-iv" class="level2">
+<h2 class="anchored" data-anchor-id="selección-de-variables-a-partir-de-woe-y-valor-de-información-iv">Selección de variables a partir de WoE y Valor de Información (IV)</h2>
+<p>Como se puede ver en <a href="#tbl-cantidad-nulos-final">Table&nbsp;6</a> donde se encuentran las variables resultantes y la cantidad de nulos de cada uno debemos hacer una imputación, dicha imputación consistirá en reemplazar valores nulos por la moda, en el caso de las variables categóricas, y por la mediana en el caso de las continuas.</p>
+<p>Dicha imputación se planteará en una función pero sólo se aplicará debidamente luego de dividir el conjunto de datos en datos de entrenamiento y datos de testeo.</p>
+<div class="cell" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="23">
+<div id="tbl-cantidad-nulos-final" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Table&nbsp;6: Cantidad de nulos en variables resultatnes</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: right;">Cantidad de nulos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">loan_amnt</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">term</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">int_rate</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">grade</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">emp_length</td>
+<td style="text-align: right;">21008</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">home_ownership</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">annual_inc</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">verification_status</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">purpose</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">dti</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">delinq_2yrs</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">inq_last_6mths</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">open_acc</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pub_rec</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">revol_bal</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">revol_util</td>
+<td style="text-align: right;">340</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">out_prncp</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">last_pymnt_amnt</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">collections_12_mths_ex_med</td>
+<td style="text-align: right;">145</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">acc_now_delinq</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tot_coll_amt</td>
+<td style="text-align: right;">70276</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tot_cur_bal</td>
+<td style="text-align: right;">70276</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Obligaciones_financieras</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>A continuación aplicaremos la división de datos de 80% y 20% para entrenamiento y testeo respectivamente:</p>
+<div class="cell" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="24">
+<div id="tbl-x-train-inicial" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;7:  Vista inicial a datos de entrenamiento </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>loan_amnt</th>
+      <th>term</th>
+      <th>int_rate</th>
+      <th>grade</th>
+      <th>emp_length</th>
+      <th>home_ownership</th>
+      <th>annual_inc</th>
+      <th>...</th>
+      <th>revol_util</th>
+      <th>out_prncp</th>
+      <th>last_pymnt_amnt</th>
+      <th>collections_12_mths_ex_med</th>
+      <th>acc_now_delinq</th>
+      <th>tot_coll_amt</th>
+      <th>tot_cur_bal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>456615</th>
+      <td>15000</td>
+      <td>36 months</td>
+      <td>8.90</td>
+      <td>A</td>
+      <td>7.0</td>
+      <td>MORTGAGE</td>
+      <td>80000.0</td>
+      <td>...</td>
+      <td>59.0</td>
+      <td>0.00</td>
+      <td>8940.22</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>143586.0</td>
+    </tr>
+    <tr>
+      <th>451541</th>
+      <td>8000</td>
+      <td>60 months</td>
+      <td>18.25</td>
+      <td>D</td>
+      <td>10.0</td>
+      <td>OWN</td>
+      <td>44000.0</td>
+      <td>...</td>
+      <td>32.1</td>
+      <td>5746.54</td>
+      <td>204.24</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>180443.0</td>
+    </tr>
+    <tr>
+      <th>394474</th>
+      <td>12150</td>
+      <td>60 months</td>
+      <td>18.92</td>
+      <td>D</td>
+      <td>3.0</td>
+      <td>OWN</td>
+      <td>27000.0</td>
+      <td>...</td>
+      <td>73.2</td>
+      <td>9282.24</td>
+      <td>314.65</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>34197.0</td>
+    </tr>
+    <tr>
+      <th>110294</th>
+      <td>10000</td>
+      <td>36 months</td>
+      <td>6.03</td>
+      <td>A</td>
+      <td>3.0</td>
+      <td>MORTGAGE</td>
+      <td>33000.0</td>
+      <td>...</td>
+      <td>21.2</td>
+      <td>0.00</td>
+      <td>3553.37</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>77959.0</td>
+    </tr>
+    <tr>
+      <th>139343</th>
+      <td>15825</td>
+      <td>36 months</td>
+      <td>12.12</td>
+      <td>B</td>
+      <td>10.0</td>
+      <td>MORTGAGE</td>
+      <td>59000.0</td>
+      <td>...</td>
+      <td>93.6</td>
+      <td>0.00</td>
+      <td>526.53</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>187370.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>163633</th>
+      <td>22800</td>
+      <td>60 months</td>
+      <td>16.29</td>
+      <td>C</td>
+      <td>10.0</td>
+      <td>MORTGAGE</td>
+      <td>85000.0</td>
+      <td>...</td>
+      <td>67.5</td>
+      <td>12158.37</td>
+      <td>557.98</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>29071.0</td>
+    </tr>
+    <tr>
+      <th>399306</th>
+      <td>20275</td>
+      <td>36 months</td>
+      <td>12.49</td>
+      <td>B</td>
+      <td>7.0</td>
+      <td>MORTGAGE</td>
+      <td>48000.0</td>
+      <td>...</td>
+      <td>75.0</td>
+      <td>9947.82</td>
+      <td>678.18</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>186530.0</td>
+    </tr>
+    <tr>
+      <th>57787</th>
+      <td>25000</td>
+      <td>60 months</td>
+      <td>14.30</td>
+      <td>C</td>
+      <td>NaN</td>
+      <td>MORTGAGE</td>
+      <td>65530.0</td>
+      <td>...</td>
+      <td>68.1</td>
+      <td>0.00</td>
+      <td>19162.85</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>290599.0</td>
+    </tr>
+    <tr>
+      <th>81641</th>
+      <td>10000</td>
+      <td>36 months</td>
+      <td>15.10</td>
+      <td>C</td>
+      <td>4.0</td>
+      <td>MORTGAGE</td>
+      <td>50000.0</td>
+      <td>...</td>
+      <td>65.1</td>
+      <td>2936.24</td>
+      <td>347.15</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>27715.0</td>
+    </tr>
+    <tr>
+      <th>38736</th>
+      <td>7500</td>
+      <td>36 months</td>
+      <td>10.08</td>
+      <td>B</td>
+      <td>7.0</td>
+      <td>MORTGAGE</td>
+      <td>50000.0</td>
+      <td>...</td>
+      <td>77.6</td>
+      <td>0.00</td>
+      <td>200.02</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>373028 rows × 22 columns</p>
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="25">
+<div id="tbl-x-test-inicial" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;8:  Vista inicial a datos de testeo </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>loan_amnt</th>
+      <th>term</th>
+      <th>int_rate</th>
+      <th>grade</th>
+      <th>emp_length</th>
+      <th>home_ownership</th>
+      <th>annual_inc</th>
+      <th>...</th>
+      <th>revol_util</th>
+      <th>out_prncp</th>
+      <th>last_pymnt_amnt</th>
+      <th>collections_12_mths_ex_med</th>
+      <th>acc_now_delinq</th>
+      <th>tot_coll_amt</th>
+      <th>tot_cur_bal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>395346</th>
+      <td>1800</td>
+      <td>36 months</td>
+      <td>14.64</td>
+      <td>C</td>
+      <td>10.0</td>
+      <td>OWN</td>
+      <td>50000.0</td>
+      <td>...</td>
+      <td>49.0</td>
+      <td>0.00</td>
+      <td>1159.57</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>965.0</td>
+      <td>107437.0</td>
+    </tr>
+    <tr>
+      <th>376583</th>
+      <td>6000</td>
+      <td>36 months</td>
+      <td>7.12</td>
+      <td>A</td>
+      <td>1.0</td>
+      <td>RENT</td>
+      <td>63000.0</td>
+      <td>...</td>
+      <td>7.1</td>
+      <td>2992.57</td>
+      <td>185.60</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>4413.0</td>
+    </tr>
+    <tr>
+      <th>297790</th>
+      <td>10700</td>
+      <td>36 months</td>
+      <td>14.99</td>
+      <td>C</td>
+      <td>0.0</td>
+      <td>RENT</td>
+      <td>82000.0</td>
+      <td>...</td>
+      <td>58.8</td>
+      <td>0.00</td>
+      <td>8835.32</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>68042.0</td>
+    </tr>
+    <tr>
+      <th>47347</th>
+      <td>15000</td>
+      <td>36 months</td>
+      <td>9.67</td>
+      <td>B</td>
+      <td>2.0</td>
+      <td>RENT</td>
+      <td>60000.0</td>
+      <td>...</td>
+      <td>26.1</td>
+      <td>0.00</td>
+      <td>10563.32</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>48874.0</td>
+    </tr>
+    <tr>
+      <th>446772</th>
+      <td>14000</td>
+      <td>60 months</td>
+      <td>18.25</td>
+      <td>D</td>
+      <td>10.0</td>
+      <td>MORTGAGE</td>
+      <td>86000.0</td>
+      <td>...</td>
+      <td>80.2</td>
+      <td>0.00</td>
+      <td>357.42</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>63601.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>32147</th>
+      <td>2500</td>
+      <td>36 months</td>
+      <td>6.39</td>
+      <td>A</td>
+      <td>10.0</td>
+      <td>OWN</td>
+      <td>33600.0</td>
+      <td>...</td>
+      <td>7.8</td>
+      <td>0.00</td>
+      <td>79.89</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>78936</th>
+      <td>10400</td>
+      <td>36 months</td>
+      <td>19.52</td>
+      <td>D</td>
+      <td>6.0</td>
+      <td>RENT</td>
+      <td>42000.0</td>
+      <td>...</td>
+      <td>76.6</td>
+      <td>3190.81</td>
+      <td>383.97</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>49987.0</td>
+    </tr>
+    <tr>
+      <th>459582</th>
+      <td>3000</td>
+      <td>36 months</td>
+      <td>23.40</td>
+      <td>E</td>
+      <td>8.0</td>
+      <td>MORTGAGE</td>
+      <td>30000.0</td>
+      <td>...</td>
+      <td>94.1</td>
+      <td>1238.46</td>
+      <td>116.76</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>79912.0</td>
+    </tr>
+    <tr>
+      <th>454915</th>
+      <td>24000</td>
+      <td>60 months</td>
+      <td>15.61</td>
+      <td>C</td>
+      <td>5.0</td>
+      <td>MORTGAGE</td>
+      <td>80000.0</td>
+      <td>...</td>
+      <td>62.0</td>
+      <td>16908.62</td>
+      <td>578.68</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>215484.0</td>
+    </tr>
+    <tr>
+      <th>223621</th>
+      <td>23325</td>
+      <td>36 months</td>
+      <td>13.11</td>
+      <td>B</td>
+      <td>7.0</td>
+      <td>RENT</td>
+      <td>47000.0</td>
+      <td>...</td>
+      <td>71.0</td>
+      <td>0.00</td>
+      <td>807.62</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>93257 rows × 22 columns</p>
+</div>
+</div>
+</div>
+</div>
+<p>Por lo que terminaremos con 373028 datos de entrenamiento y 93257 datos de testeo como se puede ver en <a href="#tbl-x-train-inicial">Table&nbsp;7</a> y <a href="#tbl-x-test-inicial">Table&nbsp;8</a>.</p>
+<p>Así imputaremos cada conjunto y pasaremos a hacer selección de categorías con WoE y valor de información.</p>
+<section id="selección-de-variables" class="level3">
+<h3 class="anchored" data-anchor-id="selección-de-variables">Selección de variables</h3>
+<p>A continuación, y usando el conjunto de datos de entrenamiento, haremos una eliminación de variables a partir del WoE y del Information Value calculado, donde seleccionaremos sólo aquellas que tengan valores por encima de 0.02 para este último.</p>
+<section id="análisis-de-iv-para-categóricas" class="level4">
+<h4 class="anchored" data-anchor-id="análisis-de-iv-para-categóricas">Análisis de IV para categóricas</h4>
+<p>Comenzaremos analizando la variable home_ownership que como se puede notar en <a href="#tbl-iv-home_ownership">Table&nbsp;9</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
+<div class="cell" data-execution_count="12">
+<div class="cell-output cell-output-display" data-execution_count="27">
+<div id="tbl-iv-home_ownership" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;9:  IV de home_ownership </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>home_ownership</th>
+      <th>n_obs</th>
+      <th>prop_good</th>
+      <th>prop_n_obs</th>
+      <th>n_good</th>
+      <th>n_bad</th>
+      <th>prop_n_good</th>
+      <th>prop_n_bad</th>
+      <th>WoE</th>
+      <th>diff_prop_good</th>
+      <th>diff_WoE</th>
+      <th>IV</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>OTHER</td>
+      <td>159</td>
+      <td>0.792453</td>
+      <td>0.000426</td>
+      <td>126.0</td>
+      <td>33.0</td>
+      <td>0.000379</td>
+      <td>0.000809</td>
+      <td>-0.758081</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.02166</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>NONE</td>
+      <td>41</td>
+      <td>0.853659</td>
+      <td>0.000110</td>
+      <td>35.0</td>
+      <td>6.0</td>
+      <td>0.000105</td>
+      <td>0.000147</td>
+      <td>-0.334267</td>
+      <td>0.061206</td>
+      <td>0.423814</td>
+      <td>0.02166</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>RENT</td>
+      <td>150776</td>
+      <td>0.874052</td>
+      <td>0.404195</td>
+      <td>131786.0</td>
+      <td>18990.0</td>
+      <td>0.396642</td>
+      <td>0.465738</td>
+      <td>-0.160588</td>
+      <td>0.020393</td>
+      <td>0.173678</td>
+      <td>0.02166</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>OWN</td>
+      <td>33313</td>
+      <td>0.890343</td>
+      <td>0.089304</td>
+      <td>29660.0</td>
+      <td>3653.0</td>
+      <td>0.089269</td>
+      <td>0.089591</td>
+      <td>-0.003605</td>
+      <td>0.016292</td>
+      <td>0.156984</td>
+      <td>0.02166</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>MORTGAGE</td>
+      <td>188739</td>
+      <td>0.904143</td>
+      <td>0.505965</td>
+      <td>170647.0</td>
+      <td>18092.0</td>
+      <td>0.513604</td>
+      <td>0.443714</td>
+      <td>0.146272</td>
+      <td>0.013800</td>
+      <td>0.149877</td>
+      <td>0.02166</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<p>Continuaremos analizando la variable verification_status que como se puede notar en <a href="#tbl-iv-verification_status">Table&nbsp;10</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
+<div class="cell" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="28">
+<div id="tbl-iv-verification_status" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;10:  IV de verification_status </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>verification_status</th>
+      <th>n_obs</th>
+      <th>prop_good</th>
+      <th>prop_n_obs</th>
+      <th>n_good</th>
+      <th>n_bad</th>
+      <th>prop_n_good</th>
+      <th>prop_n_bad</th>
+      <th>WoE</th>
+      <th>diff_prop_good</th>
+      <th>diff_WoE</th>
+      <th>IV</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Verified</td>
+      <td>134571</td>
+      <td>0.872045</td>
+      <td>0.360753</td>
+      <td>117352.0</td>
+      <td>17219.0</td>
+      <td>0.353200</td>
+      <td>0.422303</td>
+      <td>-0.178691</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.022522</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Source Verified</td>
+      <td>119969</td>
+      <td>0.895723</td>
+      <td>0.321609</td>
+      <td>107459.0</td>
+      <td>12510.0</td>
+      <td>0.323424</td>
+      <td>0.306813</td>
+      <td>0.052726</td>
+      <td>0.023678</td>
+      <td>0.231417</td>
+      <td>0.022522</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Not Verified</td>
+      <td>118488</td>
+      <td>0.906784</td>
+      <td>0.317638</td>
+      <td>107443.0</td>
+      <td>11045.0</td>
+      <td>0.323376</td>
+      <td>0.270883</td>
+      <td>0.177128</td>
+      <td>0.011061</td>
+      <td>0.124402</td>
+      <td>0.022522</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<p>Así analizando la variable purpose que como se puede notar en <a href="#tbl-iv-purpose">Table&nbsp;11</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
+<div class="cell" data-execution_count="14">
+<div class="cell-output cell-output-display" data-execution_count="29">
+<div id="tbl-iv-purpose" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;11:  IV de purpose </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>purpose</th>
+      <th>n_obs</th>
+      <th>prop_good</th>
+      <th>prop_n_obs</th>
+      <th>n_good</th>
+      <th>n_bad</th>
+      <th>prop_n_good</th>
+      <th>prop_n_bad</th>
+      <th>WoE</th>
+      <th>diff_prop_good</th>
+      <th>diff_WoE</th>
+      <th>IV</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>small_business</td>
+      <td>5605</td>
+      <td>0.787333</td>
+      <td>0.015026</td>
+      <td>4413.0</td>
+      <td>1192.0</td>
+      <td>0.013282</td>
+      <td>0.029234</td>
+      <td>-0.788933</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>educational</td>
+      <td>351</td>
+      <td>0.792023</td>
+      <td>0.000941</td>
+      <td>278.0</td>
+      <td>73.0</td>
+      <td>0.000837</td>
+      <td>0.001790</td>
+      <td>-0.760693</td>
+      <td>0.004690</td>
+      <td>0.028240</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>renewable_energy</td>
+      <td>295</td>
+      <td>0.837288</td>
+      <td>0.000791</td>
+      <td>247.0</td>
+      <td>48.0</td>
+      <td>0.000743</td>
+      <td>0.001177</td>
+      <td>-0.459668</td>
+      <td>0.045265</td>
+      <td>0.301026</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>moving</td>
+      <td>2397</td>
+      <td>0.848561</td>
+      <td>0.006426</td>
+      <td>2034.0</td>
+      <td>363.0</td>
+      <td>0.006122</td>
+      <td>0.008903</td>
+      <td>-0.374498</td>
+      <td>0.011273</td>
+      <td>0.085169</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>house</td>
+      <td>1824</td>
+      <td>0.861294</td>
+      <td>0.004890</td>
+      <td>1571.0</td>
+      <td>253.0</td>
+      <td>0.004728</td>
+      <td>0.006205</td>
+      <td>-0.271777</td>
+      <td>0.012733</td>
+      <td>0.102721</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>other</td>
+      <td>19006</td>
+      <td>0.861675</td>
+      <td>0.050951</td>
+      <td>16377.0</td>
+      <td>2629.0</td>
+      <td>0.049291</td>
+      <td>0.064477</td>
+      <td>-0.268581</td>
+      <td>0.000381</td>
+      <td>0.003196</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>medical</td>
+      <td>3750</td>
+      <td>0.863467</td>
+      <td>0.010053</td>
+      <td>3238.0</td>
+      <td>512.0</td>
+      <td>0.009746</td>
+      <td>0.012557</td>
+      <td>-0.253469</td>
+      <td>0.001791</td>
+      <td>0.015112</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>vacation</td>
+      <td>2003</td>
+      <td>0.875686</td>
+      <td>0.005370</td>
+      <td>1754.0</td>
+      <td>249.0</td>
+      <td>0.005279</td>
+      <td>0.006107</td>
+      <td>-0.145654</td>
+      <td>0.012220</td>
+      <td>0.107815</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>wedding</td>
+      <td>1900</td>
+      <td>0.881053</td>
+      <td>0.005093</td>
+      <td>1674.0</td>
+      <td>226.0</td>
+      <td>0.005038</td>
+      <td>0.005543</td>
+      <td>-0.095419</td>
+      <td>0.005366</td>
+      <td>0.050235</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>debt_consolidation</td>
+      <td>219196</td>
+      <td>0.886704</td>
+      <td>0.587613</td>
+      <td>194362.0</td>
+      <td>24834.0</td>
+      <td>0.584980</td>
+      <td>0.609065</td>
+      <td>-0.040346</td>
+      <td>0.005652</td>
+      <td>0.055072</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>home_improvement</td>
+      <td>21253</td>
+      <td>0.901614</td>
+      <td>0.056974</td>
+      <td>19162.0</td>
+      <td>2091.0</td>
+      <td>0.057673</td>
+      <td>0.051283</td>
+      <td>0.117432</td>
+      <td>0.014910</td>
+      <td>0.157778</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>major_purchase</td>
+      <td>7873</td>
+      <td>0.905246</td>
+      <td>0.021106</td>
+      <td>7127.0</td>
+      <td>746.0</td>
+      <td>0.021450</td>
+      <td>0.018296</td>
+      <td>0.159065</td>
+      <td>0.003632</td>
+      <td>0.041633</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>car</td>
+      <td>4246</td>
+      <td>0.911211</td>
+      <td>0.011383</td>
+      <td>3869.0</td>
+      <td>377.0</td>
+      <td>0.011645</td>
+      <td>0.009246</td>
+      <td>0.230651</td>
+      <td>0.005965</td>
+      <td>0.071586</td>
+      <td>0.036668</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>credit_card</td>
+      <td>83329</td>
+      <td>0.913824</td>
+      <td>0.223385</td>
+      <td>76148.0</td>
+      <td>7181.0</td>
+      <td>0.229186</td>
+      <td>0.176117</td>
+      <td>0.263385</td>
+      <td>0.002613</td>
+      <td>0.032734</td>
+      <td>0.036668</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<p>Así analizando la variable purpose que como se puede notar en <a href="#tbl-iv-grade">Table&nbsp;12</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
+<div class="cell" data-execution_count="15">
+<div class="cell-output cell-output-display" data-execution_count="30">
+<div id="tbl-iv-grade" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;12:  IV de grade </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>grade</th>
+      <th>n_obs</th>
+      <th>prop_good</th>
+      <th>prop_n_obs</th>
+      <th>n_good</th>
+      <th>n_bad</th>
+      <th>prop_n_good</th>
+      <th>prop_n_bad</th>
+      <th>WoE</th>
+      <th>diff_prop_good</th>
+      <th>diff_WoE</th>
+      <th>IV</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>G</td>
+      <td>2623</td>
+      <td>0.721693</td>
+      <td>0.007032</td>
+      <td>1893.0</td>
+      <td>730.0</td>
+      <td>0.005697</td>
+      <td>0.017904</td>
+      <td>-1.144981</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.292145</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>F</td>
+      <td>10606</td>
+      <td>0.758061</td>
+      <td>0.028432</td>
+      <td>8040.0</td>
+      <td>2566.0</td>
+      <td>0.024198</td>
+      <td>0.062932</td>
+      <td>-0.955774</td>
+      <td>0.036369</td>
+      <td>0.189207</td>
+      <td>0.292145</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>E</td>
+      <td>28590</td>
+      <td>0.804477</td>
+      <td>0.076643</td>
+      <td>23000.0</td>
+      <td>5590.0</td>
+      <td>0.069224</td>
+      <td>0.137097</td>
+      <td>-0.683340</td>
+      <td>0.046416</td>
+      <td>0.272434</td>
+      <td>0.292145</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>D</td>
+      <td>61713</td>
+      <td>0.845527</td>
+      <td>0.165438</td>
+      <td>52180.0</td>
+      <td>9533.0</td>
+      <td>0.157049</td>
+      <td>0.233801</td>
+      <td>-0.397915</td>
+      <td>0.041050</td>
+      <td>0.285425</td>
+      <td>0.292145</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>C</td>
+      <td>100342</td>
+      <td>0.885870</td>
+      <td>0.268993</td>
+      <td>88890.0</td>
+      <td>11452.0</td>
+      <td>0.267536</td>
+      <td>0.280865</td>
+      <td>-0.048620</td>
+      <td>0.040343</td>
+      <td>0.349295</td>
+      <td>0.292145</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>B</td>
+      <td>109344</td>
+      <td>0.921422</td>
+      <td>0.293125</td>
+      <td>100752.0</td>
+      <td>8592.0</td>
+      <td>0.303238</td>
+      <td>0.210723</td>
+      <td>0.363975</td>
+      <td>0.035552</td>
+      <td>0.412595</td>
+      <td>0.292145</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>A</td>
+      <td>59810</td>
+      <td>0.961361</td>
+      <td>0.160336</td>
+      <td>57499.0</td>
+      <td>2311.0</td>
+      <td>0.173057</td>
+      <td>0.056678</td>
+      <td>1.116232</td>
+      <td>0.039939</td>
+      <td>0.752257</td>
+      <td>0.292145</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="referencias" class="level2">
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">Referencias</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-IntroML" class="csl-entry" role="doc-biblioentry">
+Andreas C. Müller, Sarah Guido. 2016. <em>Introduction to Machine Learning with Python</em>. O’Reilly Media, Inc.
+</div>
+<div id="ref-HandsOn" class="csl-entry" role="doc-biblioentry">
+Géron, Aurélien. 2019. <em>Hands-on Machine Learning with Scikit-Learn, Keras, and TensorFlow, 2nd Edition</em>. O’Reilly Media, Inc.
+</div>
+<div id="ref-DataWebsite" class="csl-entry" role="doc-biblioentry">
+U.S. Department of Education. 2016. <span>“Cluster Analysis Challenge.”</span> 2016. <a href="https://data.world/exercises/cluster-analysis-exercise-2">https://data.world/exercises/cluster-analysis-exercise-2</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

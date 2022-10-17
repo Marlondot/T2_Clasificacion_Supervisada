@@ -1,0 +1,422 @@
+---
+title: "Creacion ScoreCard"
+bibliography: references.bib
+author:
+  - name: Daniel Daza Macias
+    email: dadazam@unal.edu.co
+  - name: Daniel Santiago Cadavid Montoya
+    email: dcadavid@unal.edu.co
+  - name: Jose Daniel Bustamante Arango
+    email: jobustamantea@unal.edu.co
+  - name: Marlon Calle Areiza
+    email: mcallea@unal.edu.co
+  - name: Ronald Gabriel Palencia
+    email: ropalencia@unal.edu.co
+format:
+  html:
+    code-fold: true
+jupyter: python3
+echo: false
+theme:
+          light: flatly
+          dark: darkly
+toc: true
+appendix-style: default
+---
+
+## Introducción
+
+El siguiente trabajo tiene como objetivo la realización de una scorecard que ubique a las personas en un punto de [TODO]
+
+Para realizar utilizamos la base de datos proporcionada por @DataWebsite.
+
+
+
+## Importe y análisis de datos
+
+Para comenzar se hará un cargue del conjunto de datos:
+
+```{python}
+#| tbl-cap: Datos iniciales
+#| label: tbl-import-presentacion-inicial
+
+
+import numpy as np
+import pandas as pd
+import seaborn as sb
+from tabulate import tabulate 
+import matplotlib.pyplot as plt
+from sklearn import preprocessing
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from sklearn.metrics import pairwise_distances_argmin_min
+from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, ward
+from sklearn.model_selection import train_test_split, RepeatedStratifiedKFold, cross_val_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_curve, roc_auc_score, confusion_matrix, precision_recall_curve, auc
+from sklearn.feature_selection import f_classif
+from sklearn.pipeline import Pipeline
+from sklearn.base import BaseEstimator, TransformerMixin
+from scipy.stats import chi2_contingency
+
+pd.set_option("display.max_columns", 4)
+#TODO: Explicar valores Nan
+#TODO: Revisar el tema de la low_memory=False
+datos_raw = pd.read_csv('loan_data_2007_2014.csv', na_values='PrivacySuppressed',low_memory=False)
+
+datos_raw.head(5)
+
+
+```
+
+Como se puede ver en @tbl-import-presentacion-inicial la base de datos contiene 74 columnas además de 466285 observaciones.
+
+Por otra parte nuestra variable de interés será loan_status o estado del prestamo de cada observación que tiene entre posibles valores: 'Fully Paid', 'Charged Off', 'Current', 'Default', 'Late (31-120 days)','In Grace Period', 'Late (16-30 days)', 'Does not meet the credit policy. Status:Fully Paid' y 'Does not meet the credit policy. Status:Charged Off'. Así y como nuestro objetivo parte de la clasificación en dos grupos partiremos de esta variable para otorgar a cada observación el valor de: incumplió con obligaciones financieras (0 en la nueva columna creada 'Obligaciones_financieras') o cumplió con las obligaciones financieras(1 en la nueva columna creada 'Obligaciones_financieras'), el primero siendo equivalente a los valores 'Charged Off', 'Default', 'Late (31-120 days)' y 'Does not meet the credit policy. Status:Charged Off' en 'loan_status'.
+
+```{python}
+
+pd.set_option("display.max_columns", 15)#Setting max number of columns
+
+
+df=datos_raw
+
+df['Obligaciones_financieras'] = np.where(df.loc[:, 'loan_status'].isin(['Charged Off', 'Default', 'Late (31-120 days)','Does not meet the credit policy. Status:Charged Off']), 0, 1)
+
+```
+
+
+### Selección y transformación de variables
+
+Para comenzar a seleccionar variables y como nuestro interés de acuerdo al objetivo es tener la mayor cantidad de datos sin imputar obviaremos para el ajuste del modelo aquellas cuya cantidad de datos nulos sea mayor al 70%, dichas variables se pueden ver en @tbl-variables-nulos
+
+```{python}
+#| tbl-cap: Variables con porcentaje de nulo mayor al 30%
+#| label: tbl-variables-nulos
+
+from IPython.display import Markdown
+from tabulate import tabulate
+
+missing_values = df.isnull().mean()
+missing_values = missing_values[missing_values>0.7]
+
+
+table = [[i, j] for i,j in missing_values.items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Variable","Porcentaje de datos nulos"]
+))
+
+```
+
+
+Además de esto eliminaremos las variables: 'id', 'member_id', 'sub_grade', 'emp_title', 'url', 'title', 'zip_code', 'next_pymnt_d', 'recoveries', 'collection_recovery_fee', 'total_rec_prncp', 'total_rec_late_fee' y 'policy_code', que consideramos no aportan mucha información a la hora de definir las obligaciones económicas de una persona.
+
+Procederemos a realizar una matriz de correlación de Pearson para ver qué variables podrían ser explicadas por otras y obviarlas:
+
+```{python}
+
+
+
+l = ['id', 'member_id','sub_grade','emp_title','url','title','zip_code','next_pymnt_d','recoveries','collection_recovery_fee','total_rec_prncp','total_rec_late_fee','policy_code']
+df.drop(list(missing_values.index),inplace=True, axis=1)
+df.drop(l ,inplace=True, axis=1)
+
+```
+
+
+![Matriz de correlacion](fig_1_corr_pearson.png){#fig-matriz-corr-1}
+
+Así y de acuerdo @fig-matriz-corr-1 se eliminarán aquellas columnas que posean un correlación de al menos 60% es decir las variables: 'total_rec_int', 'total_pymnt_inv', 'total_pymnt', 'installment', 'funded_amnt', 'funded_amnt_inv', 'out_prncp_inv',
+'total_acc' y 'total_rev_hi_lim'.
+
+Al final resultaríamos con las variables encontradas en @tbl-variables-resultantes, donde aquellas de tipo object son las que reconoceremos como categóricas para posterior análisis y transformación:
+
+```{python}
+#| tbl-cap: Variables resultantes y tipos
+#| label: tbl-variables-resultantes
+
+#Sacamos las variables continuas 
+variables_correlacionadas = ['total_rec_int','total_pymnt_inv','total_pymnt','installment','funded_amnt', 'funded_amnt_inv','out_prncp_inv','total_acc','total_rev_hi_lim']
+df.drop(variables_correlacionadas ,inplace=True, axis=1)
+
+
+table = [[i, j] for i,j in df.dtypes.items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Variable","Porcentaje de datos nulos"]
+))
+
+```
+
+
+#### Transformación de variables categóricas
+
+Para comenzar cambiaremos los valores categóricos de la variable emp_length por la cantidad de años como se puede observar en @tbl-cam-var-1.
+
+```{python}
+#| tbl-cap: Cambio en variable emp_length
+#| label: tbl-cam-var-1
+
+cambio = {
+    '< 1 year':0,
+    '1 year': 1,
+    '2 years': 2,
+    '3 years': 3,
+    '4 years': 4,
+    '5 years': 5,
+    '6 years': 6,
+    '7 years': 7,
+    '8 years': 8,
+    '9 years': 9,
+    '10 years': 10,
+    '10+ years':10
+}
+
+
+
+table = [[i, cambio[i], j] for i,j in df.emp_length.value_counts().items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Valor", "Nuevo valor","Cantidad de datos"]
+))
+```
+
+Continuando, se pasará a eliminar la columna 'pymnt_plan' ya que solo tiene el 0.0019% de valores en yes frente al resto de no como se puede ver en @tbl-cam-var-2 por lo que no la consideraremos como muy aportante al modelo.
+
+
+```{python}
+#| tbl-cap: Eliminación variable pymnt_plan
+#| label: tbl-cam-var-2
+
+df['emp_length'] = df['emp_length'].map(cambio)
+
+
+table = [[i, j] for i,j in df.pymnt_plan.value_counts().items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Valor","Cantidad de datos"]
+))
+```
+
+Además, se eliminarán las variables 'last_pymnt_d', 'last_credit_pull_d', 'earliest_cr_line', 'issue_d', 'addr_state', 'initial_list_status' y 'mths_since_last_delinq', que contienen fechas y no se consideran suficiente aportantes para el modelo.
+
+Para terminar se eliminarán también las columnas 'application_type', pues sólo existe un único valor que comparten todas las observaciones y 'loan_status', que es la variable de la que partimos para establecer nuestra variable objetivo.
+
+
+## Selección de variables a partir de WoE y Valor de Información (IV)
+
+Como se puede ver en @tbl-cantidad-nulos-final donde se encuentran las variables resultantes y la cantidad de nulos de cada uno debemos hacer una imputación, dicha imputación consistirá en reemplazar valores nulos por la moda, en el caso de las variables categóricas, y por la mediana en el caso de las continuas.
+
+Dicha imputación se planteará en una función pero sólo se aplicará debidamente luego de dividir el conjunto de datos en datos de entrenamiento y datos de testeo.
+
+```{python}
+#| tbl-cap: Cantidad de nulos en variables resultatnes
+#| label: tbl-cantidad-nulos-final
+
+
+df.drop('loan_status', axis=1, inplace=True)
+df.drop('pymnt_plan', axis=1, inplace=True)
+df.drop('application_type', axis=1, inplace=True)
+df.drop(['last_pymnt_d', 'last_credit_pull_d','earliest_cr_line','issue_d','addr_state','initial_list_status','mths_since_last_delinq'], axis=1, inplace=True)
+
+
+
+
+table = [[i, j] for i,j in df.isna().sum().items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Variable","Cantidad de nulos"]
+))
+
+```
+
+A continuación aplicaremos la división de datos de 80% y 20% para entrenamiento y testeo respectivamente:
+
+```{python}
+#| tbl-cap: Vista inicial a datos de entrenamiento
+#| label: tbl-x-train-inicial
+
+
+# split data into 70/30 while keeping the distribution of bad loans in test set same as that in the pre-split dataset
+from sklearn.model_selection import train_test_split
+X = df.drop('Obligaciones_financieras', axis = 1)
+y = df['Obligaciones_financieras']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42, stratify = y)
+
+# hard copy the X datasets to avoid Pandas' SetttingWithCopyWarning when we play around with this data later on.
+# this is currently an open issue between Pandas and Scikit-Learn teams
+X_train, X_test = X_train.copy(), X_test.copy()
+
+X_train
+```
+```{python}
+#| tbl-cap: Vista inicial a datos de testeo
+#| label: tbl-x-test-inicial
+
+
+X_test
+```
+
+Por lo que terminaremos con 373028 datos de entrenamiento y 93257 datos de testeo como se puede ver en @tbl-x-train-inicial y @tbl-x-test-inicial.
+
+Así imputaremos cada conjunto y pasaremos a hacer selección de categorías con WoE y valor de información.
+
+### Selección de variables
+
+A continuación, y usando el conjunto de datos de entrenamiento, haremos una eliminación de variables a partir del WoE y del Information Value calculado, donde seleccionaremos sólo aquellas que tengan valores por encima de 0.02 para este último.
+
+
+
+```{python}
+
+# We define a function to calculate WoE of continuous variables. This is same as the function we defined earlier for discrete variables.
+# The only difference are the 2 commented lines of code in the function that results in the df being sorted by continuous variable values
+def woe_ordered_continuous(df, continuous_variabe_name, y_df):
+    df = pd.concat([df[continuous_variabe_name], y_df], axis = 1)
+    df = pd.concat([df.groupby(df.columns.values[0], as_index = False)[df.columns.values[1]].count(),
+                    df.groupby(df.columns.values[0], as_index = False)[df.columns.values[1]].mean()], axis = 1)
+    df = df.iloc[:, [0, 1, 3]]
+    df.columns = [df.columns.values[0], 'n_obs', 'prop_good']
+    df['prop_n_obs'] = df['n_obs'] / df['n_obs'].sum()
+    df['n_good'] = df['prop_good'] * df['n_obs']
+    df['n_bad'] = (1 - df['prop_good']) * df['n_obs']
+    df['prop_n_good'] = df['n_good'] / df['n_good'].sum()
+    df['prop_n_bad'] = df['n_bad'] / df['n_bad'].sum()
+    df['WoE'] = np.log(df['prop_n_good'] / df['prop_n_bad'])
+    #df = df.sort_values(['WoE'])
+    #df = df.reset_index(drop = True)
+    df['diff_prop_good'] = df['prop_good'].diff().abs()
+    df['diff_WoE'] = df['WoE'].diff().abs()
+    df['IV'] = (df['prop_n_good'] - df['prop_n_bad']) * df['WoE']
+    df['IV'] = df['IV'].sum()
+    return df
+
+# The function takes 3 arguments: a dataframe (X_train_prepr), a string (column name), and a dataframe (y_train_prepr).
+# The function returns a dataframe as a result.
+def woe_discrete(df, cat_variabe_name, y_df):
+      df = pd.concat([df[cat_variabe_name], y_df], axis = 1)
+      df = pd.concat([df.groupby(df.columns.values[0], as_index = False)[df.columns.values[1]].count(),
+                      df.groupby(df.columns.values[0], as_index = False)[df.columns.values[1]].mean()], axis = 1)
+      df = df.iloc[:, [0, 1, 3]]
+      df.columns = [df.columns.values[0], 'n_obs', 'prop_good']
+      df['prop_n_obs'] = df['n_obs'] / df['n_obs'].sum()
+      df['n_good'] = df['prop_good'] * df['n_obs']
+      df['n_bad'] = (1 - df['prop_good']) * df['n_obs']
+      df['prop_n_good'] = df['n_good'] / df['n_good'].sum()
+      df['prop_n_bad'] = df['n_bad'] / df['n_bad'].sum()
+      df['WoE'] = np.log(df['prop_n_good'] / df['prop_n_bad'])
+      df = df.sort_values(['WoE'])
+      df = df.reset_index(drop = True)
+      df['diff_prop_good'] = df['prop_good'].diff().abs()
+      df['diff_WoE'] = df['WoE'].diff().abs()
+      df['IV'] = (df['prop_n_good'] - df['prop_n_bad']) * df['WoE']
+      df['IV'] = df['IV'].sum()
+      return df
+```
+
+
+#### Análisis de IV para categóricas
+
+Comenzaremos analizando la variable  home_ownership que como se puede notar en @tbl-iv-home_ownership tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de home_ownership
+#| label: tbl-iv-home_ownership
+
+
+# Create copies of the 4 training sets to be preprocessed using WoE
+X_train_prepr = X_train.copy()
+y_train_prepr = y_train.copy()
+X_test_prepr = X_test.copy()
+y_test_prepr = y_test.copy()
+
+
+woe_discrete(X_train_prepr, 'home_ownership', y_train_prepr)
+
+```
+
+
+Continuaremos analizando la variable  verification_status que como se puede notar en @tbl-iv-verification_status tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de verification_status
+#| label: tbl-iv-verification_status
+
+
+
+woe_discrete(X_train_prepr, 'verification_status', y_train_prepr)
+
+```
+
+Así analizando la variable  purpose que como se puede notar en @tbl-iv-purpose tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de purpose
+#| label: tbl-iv-purpose
+
+
+
+woe_discrete(X_train_prepr, 'purpose', y_train_prepr)
+
+```
+
+Así analizando la variable grade que como se puede notar en @tbl-iv-grade tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de grade
+#| label: tbl-iv-grade
+
+
+
+woe_discrete(X_train_prepr, 'grade', y_train_prepr)
+
+```
+
+Así analizando la variable term que como se puede notar en @tbl-iv-term tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de term
+#| label: tbl-iv-term
+
+
+
+woe_discrete(X_train_prepr, 'term', y_train_prepr)
+
+```
+
+
+Por lo que concluimos seleccionando todas las variables categóricas.
+
+#### Análisis de IV para continuas
+
+Comenzamos analizando la variable term que como se puede notar en @tbl-iv-term tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de term
+#| label: tbl-iv-term
+
+
+
+woe_discrete(X_train_prepr, 'term', y_train_prepr)
+
+```
+
+
+
+
+
+---
+nocite: |
+  @*
+---
+
+## Referencias
+
+::: {#refs}
+:::
