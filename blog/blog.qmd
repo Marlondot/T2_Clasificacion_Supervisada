@@ -267,7 +267,7 @@ Por lo que terminaremos con 373028 datos de entrenamiento y 93257 datos de teste
 
 Así imputaremos cada conjunto y pasaremos a hacer selección de categorías con WoE y valor de información.
 
-### Selección de variables
+### Selección de variables con IV
 
 A continuación, y usando el conjunto de datos de entrenamiento, haremos una eliminación de variables a partir del WoE y del Information Value calculado, donde seleccionaremos sólo aquellas que tengan valores por encima de 0.02 para este último.
 
@@ -336,9 +336,12 @@ y_train_prepr = y_train.copy()
 X_test_prepr = X_test.copy()
 y_test_prepr = y_test.copy()
 
+resultados_cat_iv=dict()
 
-woe_discrete(X_train_prepr, 'home_ownership', y_train_prepr)
 
+to_prt=woe_discrete(X_train_prepr, 'home_ownership', y_train_prepr)
+resultados_cat_iv["home_ownership"]=to_prt["IV"][0]
+to_prt
 ```
 
 
@@ -350,8 +353,9 @@ Continuaremos analizando la variable  verification_status que como se puede nota
 
 
 
-woe_discrete(X_train_prepr, 'verification_status', y_train_prepr)
-
+to_prt=woe_discrete(X_train_prepr, 'verification_status', y_train_prepr)
+resultados_cat_iv["verification_status"]=to_prt["IV"][0]
+to_prt
 ```
 
 Así analizando la variable  purpose que como se puede notar en @tbl-iv-purpose tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.
@@ -362,8 +366,9 @@ Así analizando la variable  purpose que como se puede notar en @tbl-iv-purpose 
 
 
 
-woe_discrete(X_train_prepr, 'purpose', y_train_prepr)
-
+to_prt=woe_discrete(X_train_prepr, 'purpose', y_train_prepr)
+resultados_cat_iv["purpose"]=to_prt["IV"][0]
+to_prt
 ```
 
 Así analizando la variable grade que como se puede notar en @tbl-iv-grade tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.
@@ -374,8 +379,9 @@ Así analizando la variable grade que como se puede notar en @tbl-iv-grade tiene
 
 
 
-woe_discrete(X_train_prepr, 'grade', y_train_prepr)
-
+to_prt=woe_discrete(X_train_prepr, 'grade', y_train_prepr)
+resultados_cat_iv["grade"]=to_prt["IV"][0]
+to_prt
 ```
 
 Así analizando la variable term que como se puede notar en @tbl-iv-term tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.
@@ -386,30 +392,234 @@ Así analizando la variable term que como se puede notar en @tbl-iv-term tiene u
 
 
 
-woe_discrete(X_train_prepr, 'term', y_train_prepr)
-
+to_prt=woe_discrete(X_train_prepr, 'term', y_train_prepr)
+resultados_cat_iv["term"]=to_prt["IV"][0]
+to_prt
 ```
-
 
 Por lo que concluimos seleccionando todas las variables categóricas.
 
-#### Análisis de IV para continuas
+```{python}
 
-Comenzamos analizando la variable term que como se puede notar en @tbl-iv-term tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.
+table = [[i, j] for i,j in resultados_cat_iv.items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Variable","IV"]
+))
+
+```
+#### Análisis de IV para numéricas
+
+Para comenzar se hará un análisis rápido del IV de cada variable teniendo en cuenta todas las observaciones del X_train, dividiendo variables continuas en 20 intervalos y no continuas en canditdad de valores únicos:
 
 ```{python}
-#| tbl-cap: IV de term
-#| label: tbl-iv-term
+#| tbl-cap: Resumen de IV para variables continuas
+#| label: tbl-iv-res-cont
 
 
 
-woe_discrete(X_train_prepr, 'term', y_train_prepr)
+resultados_cont_iv=dict()
+continuous_variabe_name=['loan_amnt', 'int_rate', 
+       'emp_length', 'annual_inc', 
+       'dti', 'delinq_2yrs', 'inq_last_6mths', 'open_acc',
+       'pub_rec', 'revol_bal', 'revol_util', 'out_prncp', 'last_pymnt_amnt',
+       'collections_12_mths_ex_med', 'acc_now_delinq',
+       'tot_coll_amt', 'tot_cur_bal']
+
+no_se_cortan = set(['emp_length', 'delinq_2yrs', 'inq_last_6mths', 'pub_rec', 'collections_12_mths_ex_med', 'acc_now_delinq'])
+
+for continua in continuous_variabe_name:
+  if continua in no_se_cortan:
+    resultados_cont_iv[continua] = woe_ordered_continuous(X_train_prepr, continua, y_train_prepr)["IV"][0]
+  else:
+    nombre = continua+"_factor"
+    X_train_prepr[nombre] = pd.cut(X_train_prepr[continua], 20)
+    resultados_cont_iv[continua] = woe_ordered_continuous(X_train_prepr, nombre, y_train_prepr)["IV"][0]
+  
+
+table = [[i, j] for i,j in resultados_cont_iv.items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Variable","IV"]
+))
+
+
+```
+
+Como se puede observar en @tbl-iv-res-cont hay algunas variables cuyo valor de información es inf, esto se debe a la cantidad de observaciones positivas o negativas de cada intervalo. Para controlar esto haremos el análisis de aquellas variables cuidando de posibles outliers que dificulten dicha división en intervalos
+
+Así comenzaremos analizando la variable annual_inc que como se puede notar en @tbl-iv-annual_inc tiene un IV mayor de 0.02 considerando valores menores o iguales a 150000, por lo que la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de annual_inc
+#| label: tbl-iv-annual_inc
+
+ensayitos=X_train_prepr.copy()
+ensayitos_temp = ensayitos[ensayitos['annual_inc']<=150000].copy()
+ensayitos_temp['annual_inc_factor'] = pd.cut(ensayitos_temp['annual_inc'], 20)
+woe_ordered_continuous(ensayitos_temp, 'annual_inc_factor',  y_train_prepr[ensayitos_temp.index])
 
 ```
 
 
+Continuaremos con la variable delinq_2yrs que como se puede notar en @tbl-iv-delinq_2yrs tiene un IV menor a 0.02 considerando valores menores o iguales a 10, por lo que no la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de delinq_2yrs
+#| label: tbl-iv-delinq_2yrs
+
+ensayitos_temp = ensayitos[ensayitos['delinq_2yrs']<=10].copy()
+woe_ordered_continuous(ensayitos_temp, 'delinq_2yrs',  y_train_prepr[ensayitos_temp.index])
+
+```
 
 
+Continuaremos con la variable inq_last_6mths que como se puede notar en @tbl-iv-inq_last_6mths tiene un IV mayor a 0.02 considerando valores menores o iguales a 5, por lo que la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de inq_last_6mths
+#| label: tbl-iv-inq_last_6mths
+
+ensayitos_temp = ensayitos[ensayitos['inq_last_6mths']<=8].copy()
+woe_ordered_continuous(ensayitos_temp, 'inq_last_6mths',  y_train_prepr[ensayitos_temp.index])
+
+```
+
+Continuaremos con la variable open_acc que como se puede notar en @tbl-iv-open_acc tiene un IV menor a 0.02 considerando valores menores o iguales a 28, por lo que no la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de open_acc
+#| label: tbl-iv-open_acc
+
+ensayitos_temp = ensayitos[ensayitos['open_acc']<=28].copy()
+ensayitos_temp['open_acc_factor'] = pd.cut(ensayitos_temp['open_acc'], 20)
+#ensayitos['open_acc_factor'] = pd.cut(ensayitos['open_acc'], 3)
+#woe_ordered_continuous(ensayitos, 'open_acc_factor', y_train_prepr)
+woe_ordered_continuous(ensayitos_temp, 'open_acc_factor',  y_train_prepr[ensayitos_temp.index])
+
+```
+
+Continuaremos con la variable pub_rec que como se puede notar en @tbl-iv-pub_rec tiene un IV menor a 0.02 considerando valores menores o iguales a 0.9, por lo que no la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de pub_rec
+#| label: tbl-iv-pub_rec
+
+ensayitos_temp = ensayitos[ensayitos['pub_rec']<=0.9].copy()
+ensayitos_temp['pub_rec_factor'] = pd.cut(ensayitos_temp['pub_rec'], 20)
+#ensayitos['pub_rec_factor'] = pd.cut(ensayitos['pub_rec'], 20)
+woe_ordered_continuous(ensayitos_temp, 'pub_rec_factor',  y_train_prepr[ensayitos_temp.index])
+
+```
+
+Continuaremos con la variable revol_bal que como se puede notar en @tbl-iv-revol_bal tiene un IV menor a 0.02 considerando valores menores o iguales a 60000, por lo que no la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de revol_bal
+#| label: tbl-iv-revol_bal
+
+#ensayitos['revol_bal_factor'] = pd.cut(ensayitos['revol_bal'], 5)
+#woe_ordered_continuous(ensayitos, 'revol_bal_factor', y_train_prepr)
+ensayitos_temp = ensayitos[ensayitos['revol_bal']<=60000].copy()
+ensayitos_temp['revol_bal_factor'] = pd.cut(ensayitos_temp['revol_bal'], 20)
+woe_ordered_continuous(ensayitos_temp, 'revol_bal_factor',  y_train_prepr[ensayitos_temp.index])
+```
+
+
+Continuaremos con la variable revol_util que como se puede notar en @tbl-iv-revol_util tiene un IV menor a 0.02 considerando valores menores o iguales a 105, por lo que no la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de revol_util
+#| label: tbl-iv-revol_util
+
+#ensayitos['revol_util_factor'] = pd.cut(ensayitos['revol_util'], 20)
+#woe_ordered_continuous(ensayitos, 'revol_util_factor', y_train_prepr)
+
+ensayitos_temp = ensayitos[ensayitos['revol_util']<=105].copy()
+ensayitos_temp['revol_util_factor'] = pd.cut(ensayitos_temp['revol_util'], 20)
+woe_ordered_continuous(ensayitos_temp, 'revol_util_factor',  y_train_prepr[ensayitos_temp.index])
+```
+
+Continuaremos con la variable last_pymnt_amnt que como se puede notar en @tbl-iv-last_pymnt_amnt	tiene un IV [TODO] menor a 0.02 considerando valores menores o iguales a 20, por lo que no la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de last_pymnt_amnt
+#| label: tbl-iv-last_pymnt_amnt
+
+#ensayitos['revol_util_factor'] = pd.cut(ensayitos['revol_util'], 20)
+#woe_ordered_continuous(ensayitos, 'revol_util_factor', y_train_prepr)
+
+ensayitos['last_pymnt_amnt_factor'] = pd.cut(ensayitos['last_pymnt_amnt'], 3)
+woe_ordered_continuous(ensayitos, 'last_pymnt_amnt_factor', y_train_prepr)
+```
+
+Continuaremos con la variable collections_12_mths_ex_med que como se puede notar en @tbl-iv-collections_12_mths_ex_med	tiene un IV menor a 0.02 considerando valores menores o iguales a 2, por lo que no la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de collections_12_mths_ex_med
+#| label: tbl-iv-collections_12_mths_ex_med
+
+#ensayitos['revol_util_factor'] = pd.cut(ensayitos['revol_util'], 20)
+#woe_ordered_continuous(ensayitos, 'revol_util_factor', y_train_prepr)
+
+ensayitos_temp = ensayitos[ensayitos['collections_12_mths_ex_med']<=2].copy()
+woe_ordered_continuous(ensayitos_temp, 'collections_12_mths_ex_med',  y_train_prepr[ensayitos_temp.index])
+```
+
+
+Continuaremos con la variable acc_now_delinq que como se puede notar en @tbl-iv-acc_now_delinq	tiene un IV menor a 0.02 considerando valores menores o iguales a 0, por lo que no la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de acc_now_delinq
+#| label: tbl-iv-acc_now_delinq
+
+#ensayitos['revol_util_factor'] = pd.cut(ensayitos['revol_util'], 20)
+#woe_ordered_continuous(ensayitos, 'revol_util_factor', y_train_prepr)
+
+ensayitos_temp = ensayitos[ensayitos['acc_now_delinq'] <= 0].copy()
+ensayitos_temp['acc_now_delinq_factor'] = pd.cut(ensayitos_temp['acc_now_delinq'], 20)
+woe_ordered_continuous(ensayitos_temp, 'acc_now_delinq_factor', y_train_prepr[ensayitos_temp.index])
+```
+Continuaremos con la variable tot_coll_amt que como se puede notar en @tbl-iv-tot_coll_amt	tiene un IV menor a 0.02 considerando valores menores o iguales a 750, por lo que no la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de tot_coll_amt
+#| label: tbl-iv-tot_coll_amt
+
+
+ensayitos_temp = ensayitos[ensayitos['tot_coll_amt']<=750].copy()
+ensayitos_temp['tot_coll_amt_factor'] = pd.cut(ensayitos_temp['tot_coll_amt'], 20)
+woe_ordered_continuous(ensayitos_temp, 'tot_coll_amt_factor',  y_train_prepr[ensayitos_temp.index])
+```
+Continuaremos con la variable tot_cur_bal que como se puede notar en @tbl-iv-tot_cur_bal	tiene un IV mayor a 0.02 considerando valores menores o iguales a 500000, por lo que la mantendremos para el ajuste del modelo.
+
+```{python}
+#| tbl-cap: IV de tot_cur_bal
+#| label: tbl-iv-tot_cur_bal
+
+
+ensayitos_temp = ensayitos[ensayitos['tot_cur_bal']<=500000].copy()
+ensayitos_temp['tot_cur_bal_factor'] = pd.cut(ensayitos_temp['tot_cur_bal'], 25)
+woe_ordered_continuous(ensayitos_temp, 'tot_cur_bal_factor', y_train_prepr[ensayitos_temp.index])
+```
+
+Así terminamos con un total de 12 variables :
+
+Se quedan en total 12 columnas:
+*   'purpose'
+*   'verification_status'
+*   'home_ownership'
+*   'tot_cur_bal'
+*   'dti'
+*   'inq_last_6mths'
+*   'out_prncp'
+*   'int_rate'
+*   'term'
+*   'annual_inc'
+*   'revol_util'
+*   'grade'
 
 ---
 nocite: |
