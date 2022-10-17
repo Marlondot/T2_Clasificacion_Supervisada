@@ -265,11 +265,7 @@ X_test
 
 Por lo que terminaremos con 373028 datos de entrenamiento y 93257 datos de testeo como se puede ver en @tbl-x-train-inicial y @tbl-x-test-inicial.
 
-Así imputaremos cada conjunto y pasaremos a hacer selección de categorías con WoE y valor de información.
-
-### Selección de variables con IV
-
-A continuación, y usando el conjunto de datos de entrenamiento, haremos una eliminación de variables a partir del WoE y del Information Value calculado, donde seleccionaremos sólo aquellas que tengan valores por encima de 0.02 para este último.
+Así imputaremos cada conjunto y pasaremos a hacer selección de categorías con WoE y valor de información (IV) calculado donde seleccionaremos sólo aquellas que tengan valores por encima de 0.02 para este último.
 
 
 
@@ -321,7 +317,7 @@ def woe_discrete(df, cat_variabe_name, y_df):
 ```
 
 
-#### Análisis de IV para categóricas
+### Análisis de IV para variables categóricas
 
 Comenzaremos analizando la variable  home_ownership que como se puede notar en @tbl-iv-home_ownership tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.
 
@@ -397,9 +393,11 @@ resultados_cat_iv["term"]=to_prt["IV"][0]
 to_prt
 ```
 
-Por lo que concluimos seleccionando todas las variables categóricas.
+Por lo que concluimos seleccionando todas las variables categóricas como se puede ver en el resumen de @tbl-iv-cat-res.
 
 ```{python}
+#| tbl-cap: IV de variables categóricas
+#| label: tbl-iv-cat-res
 
 table = [[i, j] for i,j in resultados_cat_iv.items()]
 
@@ -409,9 +407,9 @@ Markdown(tabulate(
 ))
 
 ```
-#### Análisis de IV para numéricas
+### Análisis de IV para numéricas
 
-Para comenzar se hará un análisis rápido del IV de cada variable teniendo en cuenta todas las observaciones del X_train, dividiendo variables continuas en 20 intervalos y no continuas en canditdad de valores únicos:
+Para comenzar se hará un análisis rápido del IV de cada variable teniendo en cuenta todas las observaciones del X_train, dividiendo variables continuas en 20 intervalos y no continuas en cantidad de valores únicos:
 
 ```{python}
 #| tbl-cap: Resumen de IV para variables continuas
@@ -448,7 +446,7 @@ Markdown(tabulate(
 
 ```
 
-Como se puede observar en @tbl-iv-res-cont hay algunas variables cuyo valor de información es inf, esto se debe a la cantidad de observaciones positivas o negativas de cada intervalo. Para controlar esto haremos el análisis de aquellas variables cuidando de posibles outliers que dificulten dicha división en intervalos
+Como se puede observar en @tbl-iv-res-cont hay algunas variables cuyo valor de información es inf, esto se debe a la cantidad de observaciones positivas o negativas en algunos de los intervalos. Para controlar esto haremos el análisis de aquellas variables cuidando de posibles outliers que dificulten dicha división en intervalos
 
 Así comenzaremos analizando la variable annual_inc que como se puede notar en @tbl-iv-annual_inc tiene un IV mayor de 0.02 considerando valores menores o iguales a 150000, por lo que la mantendremos para el ajuste del modelo.
 
@@ -501,7 +499,7 @@ woe_ordered_continuous(ensayitos_temp, 'open_acc_factor',  y_train_prepr[ensayit
 
 ```
 
-Continuaremos con la variable pub_rec que como se puede notar en @tbl-iv-pub_rec tiene un IV menor a 0.02 considerando valores menores o iguales a 0.9, por lo que no la mantendremos para el ajuste del modelo.
+Continuaremos con la variable pub_rec que como se puede notar en @tbl-iv-pub_rec tiene un IV menor a 0.02 considerando valores menores o iguales a 0.9, por lo que no la mantendremos para el ajuste del modelo pues además, como se puede notar en la misma tabla, es complicado realizar una división en intervalos suficiente para que dicha variable entregue un IV aceptable.
 
 ```{python}
 #| tbl-cap: IV de pub_rec
@@ -528,7 +526,7 @@ woe_ordered_continuous(ensayitos_temp, 'revol_bal_factor',  y_train_prepr[ensayi
 ```
 
 
-Continuaremos con la variable revol_util que como se puede notar en @tbl-iv-revol_util tiene un IV menor a 0.02 considerando valores menores o iguales a 105, por lo que no la mantendremos para el ajuste del modelo.
+Continuaremos con la variable revol_util que como se puede notar en @tbl-iv-revol_util tiene un IV mayor a 0.02 considerando valores menores o iguales a 105, por lo que la mantendremos para el ajuste del modelo.
 
 ```{python}
 #| tbl-cap: IV de revol_util
@@ -569,7 +567,7 @@ woe_ordered_continuous(ensayitos_temp, 'collections_12_mths_ex_med',  y_train_pr
 ```
 
 
-Continuaremos con la variable acc_now_delinq que como se puede notar en @tbl-iv-acc_now_delinq	tiene un IV menor a 0.02 considerando valores menores o iguales a 0, por lo que no la mantendremos para el ajuste del modelo.
+Continuaremos con la variable acc_now_delinq que como se puede notar en @tbl-iv-acc_now_delinq	tiene un IV menor a 0.02 considerando valores menores o iguales a 0, por lo que no la mantendremos para el ajuste del modelo pues además, como se puede notar en la misma tabla, es complicado realizar una división en intervalos suficiente para que dicha variable entregue un IV aceptable.
 
 ```{python}
 #| tbl-cap: IV de acc_now_delinq
