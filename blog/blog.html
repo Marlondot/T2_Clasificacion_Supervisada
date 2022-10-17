@@ -81,7 +81,12 @@ div.csl-indent {
   </ul></li>
   <li><a href="#selección-de-variables-a-partir-de-woe-y-valor-de-información-iv" id="toc-selección-de-variables-a-partir-de-woe-y-valor-de-información-iv" class="nav-link" data-scroll-target="#selección-de-variables-a-partir-de-woe-y-valor-de-información-iv">Selección de variables a partir de WoE y Valor de Información (IV)</a>
   <ul class="collapse">
-  <li><a href="#selección-de-variables-con-iv" id="toc-selección-de-variables-con-iv" class="nav-link" data-scroll-target="#selección-de-variables-con-iv">Selección de variables con IV</a></li>
+  <li><a href="#análisis-de-iv-para-variables-categóricas" id="toc-análisis-de-iv-para-variables-categóricas" class="nav-link" data-scroll-target="#análisis-de-iv-para-variables-categóricas">Análisis de IV para variables categóricas</a></li>
+  <li><a href="#análisis-de-iv-para-numéricas" id="toc-análisis-de-iv-para-numéricas" class="nav-link" data-scroll-target="#análisis-de-iv-para-numéricas">Análisis de IV para numéricas</a></li>
+  </ul></li>
+  <li><a href="#ajuste-del-modelo-y-realización-de-scorecard" id="toc-ajuste-del-modelo-y-realización-de-scorecard" class="nav-link" data-scroll-target="#ajuste-del-modelo-y-realización-de-scorecard">Ajuste del modelo y realización de Scorecard</a>
+  <ul class="collapse">
+  <li><a href="#ajuste-del-modelo" id="toc-ajuste-del-modelo" class="nav-link" data-scroll-target="#ajuste-del-modelo">Ajuste del modelo</a></li>
   </ul></li>
   <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias">Referencias</a></li>
   </ul>
@@ -1137,12 +1142,9 @@ div.csl-indent {
 </div>
 </div>
 <p>Por lo que terminaremos con 373028 datos de entrenamiento y 93257 datos de testeo como se puede ver en <a href="#tbl-x-train-inicial">Table&nbsp;7</a> y <a href="#tbl-x-test-inicial">Table&nbsp;8</a>.</p>
-<p>Así imputaremos cada conjunto y pasaremos a hacer selección de categorías con WoE y valor de información.</p>
-<section id="selección-de-variables-con-iv" class="level3">
-<h3 class="anchored" data-anchor-id="selección-de-variables-con-iv">Selección de variables con IV</h3>
-<p>A continuación, y usando el conjunto de datos de entrenamiento, haremos una eliminación de variables a partir del WoE y del Information Value calculado, donde seleccionaremos sólo aquellas que tengan valores por encima de 0.02 para este último.</p>
-<section id="análisis-de-iv-para-categóricas" class="level4">
-<h4 class="anchored" data-anchor-id="análisis-de-iv-para-categóricas">Análisis de IV para categóricas</h4>
+<p>Así imputaremos cada conjunto y pasaremos a hacer selección de categorías con WoE y valor de información (IV) calculado donde seleccionaremos sólo aquellas que tengan valores por encima de 0.02 para este último.</p>
+<section id="análisis-de-iv-para-variables-categóricas" class="level3">
+<h3 class="anchored" data-anchor-id="análisis-de-iv-para-variables-categóricas">Análisis de IV para variables categóricas</h3>
 <p>Comenzaremos analizando la variable home_ownership que como se puede notar en <a href="#tbl-iv-home_ownership">Table&nbsp;9</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="12">
 <div class="cell-output cell-output-display" data-execution_count="12">
@@ -1768,10 +1770,12 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Por lo que concluimos seleccionando todas las variables categóricas.</p>
+<p>Por lo que concluimos seleccionando todas las variables categóricas como se puede ver en el resumen de <a href="#tbl-iv-cat-res">Table&nbsp;14</a>.</p>
 <div class="cell" data-execution_count="17">
 <div class="cell-output cell-output-display" data-execution_count="17">
+<div id="tbl-iv-cat-res" class="anchored">
 <table class="table table-sm table-striped">
+<caption>Table&nbsp;14: IV de variables categóricas</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Variable</th>
@@ -1803,10 +1807,11 @@ div.csl-indent {
 </table>
 </div>
 </div>
+</div>
 </section>
-<section id="análisis-de-iv-para-numéricas" class="level4">
-<h4 class="anchored" data-anchor-id="análisis-de-iv-para-numéricas">Análisis de IV para numéricas</h4>
-<p>Para comenzar se hará un análisis rápido del IV de cada variable teniendo en cuenta todas las observaciones del X_train, dividiendo variables continuas en 20 intervalos y no continuas en canditdad de valores únicos:</p>
+<section id="análisis-de-iv-para-numéricas" class="level3">
+<h3 class="anchored" data-anchor-id="análisis-de-iv-para-numéricas">Análisis de IV para numéricas</h3>
+<p>Para comenzar se hará un análisis rápido del IV de cada variable teniendo en cuenta todas las observaciones del X_train, dividiendo variables continuas en 20 intervalos y no continuas en cantidad de valores únicos:</p>
 <div class="cell" data-execution_count="18">
 <div class="cell-output cell-output-stderr">
 <pre><code>C:\Users\marlo\AppData\Local\Programs\Python\Python310\lib\site-packages\pandas\core\arraylike.py:364: RuntimeWarning:
@@ -1817,7 +1822,7 @@ divide by zero encountered in log
 <div class="cell-output cell-output-display" data-execution_count="18">
 <div id="tbl-iv-res-cont" class="anchored">
 <table class="table table-sm table-striped">
-<caption>Table&nbsp;14: Resumen de IV para variables continuas</caption>
+<caption>Table&nbsp;15: Resumen de IV para variables continuas</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Variable</th>
@@ -1898,15 +1903,15 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Como se puede observar en <a href="#tbl-iv-res-cont">Table&nbsp;14</a> hay algunas variables cuyo valor de información es inf, esto se debe a la cantidad de observaciones positivas o negativas de cada intervalo. Para controlar esto haremos el análisis de aquellas variables cuidando de posibles outliers que dificulten dicha división en intervalos</p>
-<p>Así comenzaremos analizando la variable annual_inc que como se puede notar en <a href="#tbl-iv-annual_inc">Table&nbsp;15</a> tiene un IV mayor de 0.02 considerando valores menores o iguales a 150000, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Como se puede observar en <a href="#tbl-iv-res-cont">Table&nbsp;15</a> hay algunas variables cuyo valor de información es inf, esto se debe a la cantidad de observaciones positivas o negativas en algunos de los intervalos. Para controlar esto haremos el análisis de aquellas variables cuidando de posibles outliers que dificulten dicha división en intervalos</p>
+<p>Así comenzaremos analizando la variable annual_inc que como se puede notar en <a href="#tbl-iv-annual_inc">Table&nbsp;16</a> tiene un IV mayor de 0.02 considerando valores menores o iguales a 150000, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="19">
 <div class="cell-output cell-output-display" data-execution_count="19">
 <div id="tbl-iv-annual_inc" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;15:  IV de annual_inc </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;16:  IV de annual_inc </caption>
   <thead>
     <tr>
       <th></th>
@@ -2231,14 +2236,14 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable delinq_2yrs que como se puede notar en <a href="#tbl-iv-delinq_2yrs">Table&nbsp;16</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 10, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable delinq_2yrs que como se puede notar en <a href="#tbl-iv-delinq_2yrs">Table&nbsp;17</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 10, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="20">
 <div class="cell-output cell-output-display" data-execution_count="20">
 <div id="tbl-iv-delinq_2yrs" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;16:  IV de delinq_2yrs </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;17:  IV de delinq_2yrs </caption>
   <thead>
     <tr>
       <th></th>
@@ -2428,14 +2433,14 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable inq_last_6mths que como se puede notar en <a href="#tbl-iv-inq_last_6mths">Table&nbsp;17</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 5, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable inq_last_6mths que como se puede notar en <a href="#tbl-iv-inq_last_6mths">Table&nbsp;18</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 5, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="21">
 <div class="cell-output cell-output-display" data-execution_count="21">
 <div id="tbl-iv-inq_last_6mths" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;17:  IV de inq_last_6mths </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;18:  IV de inq_last_6mths </caption>
   <thead>
     <tr>
       <th></th>
@@ -2595,14 +2600,14 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable open_acc que como se puede notar en <a href="#tbl-iv-open_acc">Table&nbsp;18</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 28, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable open_acc que como se puede notar en <a href="#tbl-iv-open_acc">Table&nbsp;19</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 28, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="22">
 <div class="cell-output cell-output-display" data-execution_count="22">
 <div id="tbl-iv-open_acc" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;18:  IV de open_acc </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;19:  IV de open_acc </caption>
   <thead>
     <tr>
       <th></th>
@@ -2927,14 +2932,14 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable pub_rec que como se puede notar en <a href="#tbl-iv-pub_rec">Table&nbsp;19</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 0.9, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable pub_rec que como se puede notar en <a href="#tbl-iv-pub_rec">Table&nbsp;20</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 0.9, por lo que no la mantendremos para el ajuste del modelo pues además, como se puede notar en la misma tabla, es complicado realizar una división en intervalos suficiente para que dicha variable entregue un IV aceptable.</p>
 <div class="cell" data-execution_count="23">
 <div class="cell-output cell-output-display" data-execution_count="23">
 <div id="tbl-iv-pub_rec" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;19:  IV de pub_rec </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;20:  IV de pub_rec </caption>
   <thead>
     <tr>
       <th></th>
@@ -3259,14 +3264,14 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable revol_bal que como se puede notar en <a href="#tbl-iv-revol_bal">Table&nbsp;20</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 60000, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable revol_bal que como se puede notar en <a href="#tbl-iv-revol_bal">Table&nbsp;21</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 60000, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="24">
 <div class="cell-output cell-output-display" data-execution_count="24">
 <div id="tbl-iv-revol_bal" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;20:  IV de revol_bal </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;21:  IV de revol_bal </caption>
   <thead>
     <tr>
       <th></th>
@@ -3591,14 +3596,14 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable revol_util que como se puede notar en <a href="#tbl-iv-revol_util">Table&nbsp;21</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 105, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable revol_util que como se puede notar en <a href="#tbl-iv-revol_util">Table&nbsp;22</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 105, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="25">
 <div class="cell-output cell-output-display" data-execution_count="25">
 <div id="tbl-iv-revol_util" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;21:  IV de revol_util </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;22:  IV de revol_util </caption>
   <thead>
     <tr>
       <th></th>
@@ -3923,14 +3928,14 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable last_pymnt_amnt que como se puede notar en <a href="#tbl-iv-last_pymnt_amnt">Table&nbsp;22</a> tiene un IV [TODO] menor a 0.02 considerando valores menores o iguales a 20, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable last_pymnt_amnt que como se puede notar en <a href="#tbl-iv-last_pymnt_amnt">Table&nbsp;23</a> tiene un IV [TODO] menor a 0.02 considerando valores menores o iguales a 20, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="26">
 <div class="cell-output cell-output-display" data-execution_count="26">
 <div id="tbl-iv-last_pymnt_amnt" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;22:  IV de last_pymnt_amnt </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;23:  IV de last_pymnt_amnt </caption>
   <thead>
     <tr>
       <th></th>
@@ -4000,14 +4005,14 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable collections_12_mths_ex_med que como se puede notar en <a href="#tbl-iv-collections_12_mths_ex_med">Table&nbsp;23</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 2, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable collections_12_mths_ex_med que como se puede notar en <a href="#tbl-iv-collections_12_mths_ex_med">Table&nbsp;24</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 2, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="27">
 <div class="cell-output cell-output-display" data-execution_count="27">
 <div id="tbl-iv-collections_12_mths_ex_med" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;23:  IV de collections_12_mths_ex_med </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;24:  IV de collections_12_mths_ex_med </caption>
   <thead>
     <tr>
       <th></th>
@@ -4077,14 +4082,14 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable acc_now_delinq que como se puede notar en <a href="#tbl-iv-acc_now_delinq">Table&nbsp;24</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 0, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable acc_now_delinq que como se puede notar en <a href="#tbl-iv-acc_now_delinq">Table&nbsp;25</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 0, por lo que no la mantendremos para el ajuste del modelo pues además, como se puede notar en la misma tabla, es complicado realizar una división en intervalos suficiente para que dicha variable entregue un IV aceptable.</p>
 <div class="cell" data-execution_count="28">
 <div class="cell-output cell-output-display" data-execution_count="28">
 <div id="tbl-iv-acc_now_delinq" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;24:  IV de acc_now_delinq </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;25:  IV de acc_now_delinq </caption>
   <thead>
     <tr>
       <th></th>
@@ -4409,14 +4414,14 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable tot_coll_amt que como se puede notar en <a href="#tbl-iv-tot_coll_amt">Table&nbsp;25</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 750, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable tot_coll_amt que como se puede notar en <a href="#tbl-iv-tot_coll_amt">Table&nbsp;26</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 750, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="29">
 <div class="cell-output cell-output-display" data-execution_count="29">
 <div id="tbl-iv-tot_coll_amt" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;25:  IV de tot_coll_amt </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;26:  IV de tot_coll_amt </caption>
   <thead>
     <tr>
       <th></th>
@@ -4741,14 +4746,14 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable tot_cur_bal que como se puede notar en <a href="#tbl-iv-tot_cur_bal">Table&nbsp;26</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 500000, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable tot_cur_bal que como se puede notar en <a href="#tbl-iv-tot_cur_bal">Table&nbsp;27</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 500000, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="30">
 <div class="cell-output cell-output-display" data-execution_count="30">
 <div id="tbl-iv-tot_cur_bal" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;26:  IV de tot_cur_bal </caption>
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;27:  IV de tot_cur_bal </caption>
   <thead>
     <tr>
       <th></th>
@@ -5148,9 +5153,340 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Así terminamos con un total de 12 variables :</p>
-<p>Se quedan en total 12 columnas: - ‘purpose’ - ‘verification_status’ - ‘home_ownership’ - ‘tot_cur_bal’ - ‘dti’ - ‘inq_last_6mths’ - ‘out_prncp’ - ‘int_rate’ - ‘term’ - ‘annual_inc’ - ‘revol_util’ - ‘grade’</p>
+<p>Así terminamos con un total de 12 variables categóricas y numéricas:</p>
+<ul>
+<li>‘purpose’</li>
+<li>‘verification_status’</li>
+<li>‘home_ownership’</li>
+<li>‘tot_cur_bal’</li>
+<li>‘dti’</li>
+<li>‘inq_last_6mths’</li>
+<li>‘out_prncp’</li>
+<li>‘int_rate’</li>
+<li>‘term’</li>
+<li>‘annual_inc’</li>
+<li>‘revol_util’</li>
+<li>‘grade’</li>
+</ul>
 </section>
+</section>
+<section id="ajuste-del-modelo-y-realización-de-scorecard" class="level2">
+<h2 class="anchored" data-anchor-id="ajuste-del-modelo-y-realización-de-scorecard">Ajuste del modelo y realización de Scorecard</h2>
+<p>Para continuar con el ajuste del modelo ya con las variables escogidas se hará una pipeline que tratará el conjunto de datos de diferentes maneras: Para las variables continuas se crearán variables dummies de intervalos, el último de ellos tendiendo a infinito, y se transformará el valor de la variable de cada observación en 1 y 0’s de acuerdo al intervalo en el que caiga dicho valor. Para las variables categórica simplemente se crearán variabes dummies y se procederá como un OneHotEncoding normal. Esto se puede observar en <a href="#tbl-pre-datos-1">Table&nbsp;28</a>.</p>
+<div class="cell" data-execution_count="31">
+<div class="cell-output cell-output-display" data-execution_count="31">
+<div id="tbl-pre-datos-1" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;28:  Preprocesamiento total de datos </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>grade:A</th>
+      <th>grade:B</th>
+      <th>grade:C</th>
+      <th>grade:D</th>
+      <th>grade:E</th>
+      <th>grade:F</th>
+      <th>grade:G</th>
+      <th>...</th>
+      <th>out_prncp:10,291-15,437</th>
+      <th>out_prncp:&gt;15,437</th>
+      <th>tot_cur_bal:0-100000</th>
+      <th>tot_cur_bal:100000-200000</th>
+      <th>tot_cur_bal:200000-300000</th>
+      <th>tot_cur_bal:300000-400000</th>
+      <th>tot_cur_bal:400000-500000</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>456615</th>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>451541</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>394474</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>110294</th>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>139343</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>163633</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>399306</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>57787</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>81641</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>38736</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>373028 rows × 71 columns</p>
+</div>
+</div>
+</div>
+</div>
+<section id="ajuste-del-modelo" class="level3">
+<h3 class="anchored" data-anchor-id="ajuste-del-modelo">Ajuste del modelo</h3>
+<p>Para el ajuste del modelo se usará regresión logística cuyos parametros serán, y de acuerdo a un GridSearchCV realizado, max_iter=1000 y class_weight=‘auto’. A dicho modelo se la pasará un conjunto de datos que habrá pasado por la pipeline mencionada anteriormente:</p>
+<div class="cell" data-execution_count="32">
+<div class="cell-output cell-output-display" data-execution_count="32">
+<div id="tbl-model-summary" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;29:  Resumen del modelo entrenado </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Feature name</th>
+      <th>Coefficients</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Intercept</td>
+      <td>3.372336</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>grade:A</td>
+      <td>0.764690</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>grade:B</td>
+      <td>0.454917</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>grade:C</td>
+      <td>0.159338</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>grade:D</td>
+      <td>-0.029625</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>67</th>
+      <td>tot_cur_bal:0-100000</td>
+      <td>-0.303520</td>
+    </tr>
+    <tr>
+      <th>68</th>
+      <td>tot_cur_bal:100000-200000</td>
+      <td>-0.303168</td>
+    </tr>
+    <tr>
+      <th>69</th>
+      <td>tot_cur_bal:200000-300000</td>
+      <td>-0.239514</td>
+    </tr>
+    <tr>
+      <th>70</th>
+      <td>tot_cur_bal:300000-400000</td>
+      <td>-0.195303</td>
+    </tr>
+    <tr>
+      <th>71</th>
+      <td>tot_cur_bal:400000-500000</td>
+      <td>-0.189118</td>
+    </tr>
+  </tbody>
+</table>
+<p>72 rows × 2 columns</p>
+</div>
+</div>
+</div>
+</div>
+<p>Ya con el modelo entrenado y con coeficientes para cada una de las variables como se puede ver en <a href="#tbl-model-summary">Table&nbsp;29</a>.</p>
 </section>
 </section>
 <section id="referencias" class="level2">

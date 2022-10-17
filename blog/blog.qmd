@@ -603,9 +603,8 @@ ensayitos_temp['tot_cur_bal_factor'] = pd.cut(ensayitos_temp['tot_cur_bal'], 25)
 woe_ordered_continuous(ensayitos_temp, 'tot_cur_bal_factor', y_train_prepr[ensayitos_temp.index])
 ```
 
-Así terminamos con un total de 12 variables :
+Así terminamos con un total de 12 variables categóricas y numéricas:
 
-Se quedan en total 12 columnas:
 *   'purpose'
 *   'verification_status'
 *   'home_ownership'
@@ -618,6 +617,272 @@ Se quedan en total 12 columnas:
 *   'annual_inc'
 *   'revol_util'
 *   'grade'
+
+## Ajuste del modelo y realización de Scorecard
+
+Para continuar con el ajuste del modelo ya con las variables escogidas se hará una pipeline que tratará el conjunto de datos de diferentes maneras: Para las variables continuas se crearán variables dummies de intervalos, el último de ellos tendiendo a infinito, y se transformará el valor de la variable de cada observación en 1 y 0's de acuerdo al intervalo en el que caiga dicho valor. Para las variables categórica simplemente se crearán variabes dummies y se procederá como un OneHotEncoding normal. Esto se puede observar en @tbl-pre-datos-1.
+
+
+```{python}
+#| tbl-cap: Preprocesamiento total de datos
+#| label: tbl-pre-datos-1
+
+
+#Imputación de los datos
+def imputar(X):    
+    #Finding the median of the column having NaN
+    mean_valuegrade=X['grade'].mode()
+    mean_value1=X['emp_length'].median()
+    mean_value2=X['annual_inc'].median()
+    mean_value3=X['delinq_2yrs'].median()
+    mean_value4=X['inq_last_6mths'].median()
+    mean_value5=X['open_acc'].median()
+    mean_value6=X['pub_rec'].median()
+    mean_value7=X['revol_util'].median()
+    mean_value8=X['collections_12_mths_ex_med'].median()
+    mean_value9=X['acc_now_delinq'].median()
+    mean_value10=X['tot_coll_amt'].median()
+    mean_value11=X['tot_cur_bal'].median()
+    
+    # median of values in the same column
+    X['grade'].fillna(value=mean_valuegrade, inplace=True)
+    X['emp_length'].fillna(value=mean_value1, inplace=True)
+    X['annual_inc'].fillna(value=mean_value2, inplace=True)
+    X['delinq_2yrs'].fillna(value=mean_value3, inplace=True)
+    X['inq_last_6mths'].fillna(value=mean_value4, inplace=True)
+    X['open_acc'].fillna(value=mean_value5, inplace=True)
+    X['pub_rec'].fillna(value=mean_value6, inplace=True)
+    X['revol_util'].fillna(value=mean_value7, inplace=True)
+    X['collections_12_mths_ex_med'].fillna(value=mean_value8, inplace=True)
+    X['acc_now_delinq'].fillna(value=mean_value9, inplace=True)
+    X['tot_coll_amt'].fillna(value=mean_value10, inplace=True)
+    X['tot_cur_bal'].fillna(value=mean_value11, inplace=True)
+  
+imputar(X_train)
+imputar(X_test)
+
+
+# function to create dummy variables
+def dummy_creation(df, columns_list):
+    df_dummies = []
+    for col in columns_list:
+        df_dummies.append(pd.get_dummies(df[col], prefix = col, prefix_sep = ':'))
+    df_dummies = pd.concat(df_dummies, axis = 1)
+    df = pd.concat([df, df_dummies], axis = 1)
+    return df
+
+# apply to our final four categorical variables
+X_train = dummy_creation(X_train, ['grade', 'home_ownership', 'verification_status', 'purpose'])
+X_test = dummy_creation(X_test, ['grade', 'home_ownership', 'verification_status', 'purpose'])
+
+
+ref_categories = ['out_prncp:>15,437', 'revol_util:>1.0', 'inq_last_6mths:>4', 'dti:>35.191', 
+                  'annual_inc:>150K', 'int_rate:>20.281', 'term:60', 'purpose:major_purchcarhome_impr', 'verification_status:Not Verified', 
+                  'home_ownership:MORTGAGE', 'grade:G', 'tot_cur_bal:0-100000']
+
+
+# This custom class will create new categorical dummy features based on the cut-off points that we manually identified
+# based on the WoE plots and IV above.
+# Given the way it is structured, this class also allows a fit_transform method to be implemented on it, thereby allowing 
+# us to use it as part of a scikit-learn Pipeline 
+class WoE_Binning(BaseEstimator, TransformerMixin):
+    def __init__(self, X): # no *args or *kargs
+        self.X = X
+    def fit(self, X, y = None):
+        return self #nothing else to do
+    def transform(self, X):
+        X_new = X.loc[:, 'grade:A': 'grade:G']
+        X_new['home_ownership:OWN'] = X.loc[:,'home_ownership:OWN']
+        X_new['home_ownership:MORTGAGE'] = X.loc[:,'home_ownership:MORTGAGE']
+        X_new['home_ownership:OTHER_NONE_RENT'] = sum([X['home_ownership:OTHER'], X['home_ownership:NONE'], X['home_ownership:RENT']])
+        X_new = pd.concat([X_new, X.loc[:, 'verification_status:Not Verified':'verification_status:Verified']], axis = 1)
+
+        # For the purpose of this column, we keep debt_consolidation (due to volume) and credit_card (due to unique characteristics) as separate cateogories
+        # These categories have very few observations: educational, renewable_energy, vacation, house, wedding, car
+        # car is the least risky so we will combine it with the other 2 least risky categories: home_improvement and major_purchase
+        # educational, renewable_energy (both low observations) will be combined with small_business and moving
+        # vacation, house and wedding (remaining 3 with low observations) will be combined with medical and other
+        X_new['purpose:debt_consolidation'] = X.loc[:,'purpose:debt_consolidation']
+        X_new['purpose:credit_card'] = X.loc[:,'purpose:credit_card']
+        X_new['purpose:major_purch__car__home_impr'] = sum([X['purpose:major_purchase'], X['purpose:car'], X['purpose:home_improvement']])
+        X_new['purpose:educ__ren_en__sm_b__mov'] = sum([X['purpose:educational'], X['purpose:renewable_energy'], X['purpose:small_business'], 
+                                                        X['purpose:moving']])
+        X_new['purpose:vacation__house__wedding__med__oth'] = sum([X['purpose:vacation'], X['purpose:house'], X['purpose:wedding'], 
+                                                                   X['purpose:medical'], X['purpose:other']])
+        X_new['term:36'] = np.where((X['term'] == 36), 1, 0)
+        X_new['term:60'] = np.where((X['term'] == 60), 1, 0)
+        X_new['int_rate:<7.071'] = np.where((X['int_rate'] <= 7.071), 1, 0)
+        X_new['int_rate:7.071-10.374'] = np.where((X['int_rate'] > 7.071) & (X['int_rate'] <= 10.374), 1, 0)
+        X_new['int_rate:10.374-13.676'] = np.where((X['int_rate'] > 10.374) & (X['int_rate'] <= 13.676), 1, 0)
+        X_new['int_rate:13.676-15.74'] = np.where((X['int_rate'] > 13.676) & (X['int_rate'] <= 15.74), 1, 0)
+        X_new['int_rate:15.74-20.281'] = np.where((X['int_rate'] > 15.74) & (X['int_rate'] <= 20.281), 1, 0)
+        X_new['int_rate:>20.281'] = np.where((X['int_rate'] > 20.281), 1, 0)
+        X_new['annual_inc:missing'] = np.where(X['annual_inc'].isnull(), 1, 0)
+        X_new['annual_inc:<28,555'] = np.where((X['annual_inc'] <= 28555), 1, 0)
+        X_new['annual_inc:28,555-37,440'] = np.where((X['annual_inc'] > 28555) & (X['annual_inc'] <= 37440), 1, 0)
+        X_new['annual_inc:37,440-61,137'] = np.where((X['annual_inc'] > 37440) & (X['annual_inc'] <= 61137), 1, 0)
+        X_new['annual_inc:61,137-81,872'] = np.where((X['annual_inc'] > 61137) & (X['annual_inc'] <= 81872), 1, 0)
+        X_new['annual_inc:81,872-102,606'] = np.where((X['annual_inc'] > 81872) & (X['annual_inc'] <= 102606), 1, 0)
+        X_new['annual_inc:102,606-120,379'] = np.where((X['annual_inc'] > 102606) & (X['annual_inc'] <= 120379), 1, 0)
+        X_new['annual_inc:120,379-150,000'] = np.where((X['annual_inc'] > 120379) & (X['annual_inc'] <= 150000), 1, 0)
+        X_new['annual_inc:>150K'] = np.where((X['annual_inc'] > 150000), 1, 0)
+        X_new['dti:<=1.6'] = np.where((X['dti'] <= 1.6), 1, 0)
+        X_new['dti:1.6-5.599'] = np.where((X['dti'] > 1.6) & (X['dti'] <= 5.599), 1, 0)
+        X_new['dti:5.599-10.397'] = np.where((X['dti'] > 5.599) & (X['dti'] <= 10.397), 1, 0)
+        X_new['dti:10.397-15.196'] = np.where((X['dti'] > 10.397) & (X['dti'] <= 15.196), 1, 0)
+        X_new['dti:15.196-19.195'] = np.where((X['dti'] > 15.196) & (X['dti'] <= 19.195), 1, 0)
+        X_new['dti:19.195-24.794'] = np.where((X['dti'] > 19.195) & (X['dti'] <= 24.794), 1, 0)
+        X_new['dti:24.794-35.191'] = np.where((X['dti'] > 24.794) & (X['dti'] <= 35.191), 1, 0)
+        X_new['dti:>35.191'] = np.where((X['dti'] > 35.191), 1, 0)
+        X_new['inq_last_6mths:missing'] = np.where(X['inq_last_6mths'].isnull(), 1, 0)
+        X_new['inq_last_6mths:0'] = np.where((X['inq_last_6mths'] == 0), 1, 0)
+        X_new['inq_last_6mths:1-2'] = np.where((X['inq_last_6mths'] >= 1) & (X['inq_last_6mths'] <= 2), 1, 0)
+        X_new['inq_last_6mths:3-4'] = np.where((X['inq_last_6mths'] >= 3) & (X['inq_last_6mths'] <= 4), 1, 0)
+        X_new['inq_last_6mths:>4'] = np.where((X['inq_last_6mths'] > 4), 1, 0)
+        # We will discretize on the deciles for revol_util
+        X_new['revol_util:missing'] = np.where(X['revol_util'].isnull(), 1, 0)
+        X_new['revol_util:<0.1'] = np.where((X['revol_util'] <= 0.1), 1, 0)
+        X_new['revol_util:0.1-0.2'] = np.where((X['revol_util'] > 0.1) & (X['revol_util'] <= 0.2), 1, 0)
+        X_new['revol_util:0.2-0.3'] = np.where((X['revol_util'] > 0.2) & (X['revol_util'] <= 0.3), 1, 0)
+        X_new['revol_util:0.3-0.4'] = np.where((X['revol_util'] > 0.3) & (X['revol_util'] <= 0.4), 1, 0)
+        X_new['revol_util:0.4-0.5'] = np.where((X['revol_util'] > 0.4) & (X['revol_util'] <= 0.5), 1, 0)
+        X_new['revol_util:0.5-0.6'] = np.where((X['revol_util'] > 0.5) & (X['revol_util'] <= 0.6), 1, 0)
+        X_new['revol_util:0.6-0.7'] = np.where((X['revol_util'] > 0.6) & (X['revol_util'] <= 0.7), 1, 0)
+        X_new['revol_util:0.7-0.8'] = np.where((X['revol_util'] > 0.7) & (X['revol_util'] <= 0.8), 1, 0)
+        X_new['revol_util:0.8-0.9'] = np.where((X['revol_util'] > 0.8) & (X['revol_util'] <= 0.9), 1, 0)
+        X_new['revol_util:0.9-1.0'] = np.where((X['revol_util'] > 0.9) & (X['revol_util'] <= 1.0), 1, 0)
+        X_new['revol_util:>1.0'] = np.where((X['revol_util'] > 1.0), 1, 0)
+        X_new['out_prncp:<1,286'] = np.where((X['out_prncp'] <= 1286), 1, 0)
+        X_new['out_prncp:1,286-6,432'] = np.where((X['out_prncp'] > 1286) & (X['out_prncp'] <= 6432), 1, 0)
+        X_new['out_prncp:6,432-9,005'] = np.where((X['out_prncp'] > 6432) & (X['out_prncp'] <= 9005), 1, 0)
+        X_new['out_prncp:9,005-10,291'] = np.where((X['out_prncp'] > 9005) & (X['out_prncp'] <= 10291), 1, 0)
+        X_new['out_prncp:10,291-15,437'] = np.where((X['out_prncp'] > 10291) & (X['out_prncp'] <= 15437), 1, 0)
+        X_new['out_prncp:>15,437'] = np.where((X['out_prncp'] > 15437), 1, 0)
+
+        X_new['tot_cur_bal:0-100000'] = np.where((X['tot_cur_bal'] > 0) & (X['tot_cur_bal'] <= 100000), 1, 0)
+        X_new['tot_cur_bal:100000-200000'] = np.where((X['tot_cur_bal'] > 100000) & (X['tot_cur_bal'] <= 200000), 1, 0)
+        X_new['tot_cur_bal:200000-300000'] = np.where((X['tot_cur_bal'] > 200000) & (X['tot_cur_bal'] <= 300000), 1, 0)
+        X_new['tot_cur_bal:300000-400000'] = np.where((X['tot_cur_bal'] > 300000) & (X['tot_cur_bal'] <= 400000), 1, 0)
+        X_new['tot_cur_bal:400000-500000'] = np.where((X['tot_cur_bal'] > 400000) & (X['tot_cur_bal'] <= 500000), 1, 0)
+
+        X_new.drop(columns = [], inplace = True)
+        return X_new
+# we could have also structured this class without the last drop statement and without creating categories out of the 
+# feature categories. But doing the way we have done here allows us to keep a proper track of the categories, if required
+
+
+to_prt = WoE_Binning(X)
+to_prt_1= to_prt.transform(X_train.copy())
+
+to_prt_1
+```
+
+
+### Ajuste del modelo
+
+Para el ajuste del modelo se usará regresión logística cuyos parametros serán, y de acuerdo a un GridSearchCV realizado, max_iter=1000 y class_weight='auto'. A dicho modelo se la pasará un conjunto de datos que habrá pasado por la pipeline mencionada anteriormente:
+
+```{python}
+#| tbl-cap: Resumen del modelo entrenado
+#| label: tbl-model-summary
+
+
+import joblib
+from sklearn.linear_model import LogisticRegression
+
+# fit the pipeline on the whole training set
+woe_transform = WoE_Binning(X)
+reg = LogisticRegression(max_iter=1000, class_weight = 'auto')
+pipeline = Pipeline(steps=[('woe', woe_transform), ('model', reg)])
+pipeline.fit(X_train, y_train)
+
+
+# first create a transformed training set through our WoE_Binning custom class
+X_train_woe_transformed = woe_transform.fit_transform(X_train)
+# Store the column names in X_train as a list
+feature_name = X_train_woe_transformed.columns.values
+# Create a summary table of our logistic regression model
+summary_table = pd.DataFrame(columns = ['Feature name'], data = feature_name)
+# Create a new column in the dataframe, called 'Coefficients', with row values the transposed coefficients from the 'LogisticRegression' model
+summary_table['Coefficients'] = np.transpose(pipeline['model'].coef_)
+# Increase the index of every row of the dataframe with 1 to store our model intercept in 1st row
+summary_table.index = summary_table.index + 1
+# Assign our model intercept to this new row
+summary_table.loc[0] = ['Intercept', pipeline['model'].intercept_[0]]
+# Sort the dataframe by index
+summary_table.sort_index(inplace = True)
+summary_table
+``` 
+
+Ya con el modelo entrenado y con coeficientes para cada una de las variables como se puede ver en @tbl-model-summary se procederán a analizar resultados del ajuste:
+
+```{python}
+#| fig-cap: Matriz de confusión
+#| label: fig-matriz-corr-1
+
+# make preditions on our test set
+y_hat_test = pipeline.predict(X_test)
+# get the predicted probabilities
+y_hat_test_proba = pipeline.predict_proba(X_test)
+
+# make preditions on our test set
+y_hat_test = pipeline.predict(X_test)
+# get the predicted probabilities
+y_hat_test_proba = pipeline.predict_proba(X_test)
+# select the probabilities of only the positive class (class 1 - default) 
+y_hat_test_proba = y_hat_test_proba[:][: , 1]
+
+# create a temp y_test DF to reset its index to allow proper concaternation with y_hat_test_proba
+y_test_temp = y_test.copy()
+y_test_temp.reset_index(drop = True, inplace = True)
+y_test_proba = pd.concat([y_test_temp, pd.DataFrame(y_hat_test_proba)], axis = 1)
+
+# Rename the columns
+y_test_proba.columns = ['y_test_class_actual', 'y_hat_test_proba']
+# Makes the index of one dataframe equal to the index of another dataframe.
+y_test_proba.index = X_test.index
+
+
+import seaborn as sns
+# assign a threshold value to differentiate good with bad
+tr = 0.5
+# crate a new column for the predicted class based on predicted probabilities and threshold
+# We will determine this optimat threshold later in this project
+y_test_proba['y_test_class_predicted'] = np.where(y_test_proba['y_hat_test_proba'] > tr, 1, 0)
+# create the confusion matrix
+cm1 = confusion_matrix(y_test_proba['y_test_class_actual'], y_test_proba['y_test_class_predicted'], normalize = 'all')
+sns.heatmap(cm1,annot=True,cbar=False)
+
+```
+
+Como se puede ver en @fig-matriz-corr-1 el modelo ajustado es muy bueno para predecir verdaderos positivos, pero no para verdaderos negativos que los termina pasando como falsos positivos, lo que en contexto significaría otorgar créditos a muchas personas.
+
+```{python}
+#| fig-cap: Curva de 
+#| label: fig-roc-curve-1
+
+
+# get the values required to plot a ROC curve
+fpr, tpr, thresholds = roc_curve(y_test_proba['y_test_class_actual'], y_test_proba['y_hat_test_proba'])
+# plot the ROC curve
+plt.plot(fpr, tpr)
+# plot a secondary diagonal line, with dashed line style and black color to represent a no-skill classifier
+plt.plot(fpr, fpr, linestyle = '--', color = 'k')
+plt.xlabel('False positive rate')
+plt.ylabel('True positive rate')
+plt.title('ROC curve')
+```
+
+En @fig-roc-curve-1 podemos observar el rendimiento de la curva de roc donde se nota que la convergencia a uno es relativamente rápida.  Por otra parte obtenemos un valor AUROC de 0.7751, es decir la probabilidad de que a una persona le aprueben un crédito y que en efecto cumple las caracteristicas para ser aprobado es del 77%.
+
+### Creación de scorecard
+
+Para comenzar, aquellos coeficientes obtenidos anteriormente se deben escalar con respecto a la escala escogida, en este caso vamos a basarnos en los puntajes establecidos por FICO que se encuentran en el intervalo 300-850. Una vez escalados los redondeamos para obtener el score preliminar.
+
+Al calcular el máximo y el mínimo valor obtenido con el score preliminar encontramos que el máximo es 851 que se pasa de el limite establecido inicialmente, para corregir esto sin afectar mucho el modelo inicial vamos a encontrar el la máxima diferencia entre el score calculado y el preliminar entre los mayores valores de cada categoría, y a este le restamos uno.
+
+
+
 
 ---
 nocite: |
