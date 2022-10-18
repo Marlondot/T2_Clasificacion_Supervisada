@@ -1,5 +1,5 @@
 ---
-title: "Creacion ScoreCard"
+title: "Creacion scorecard para calculo de puntaje crediticio a partir de un modelo predictivo"
 bibliography: references.bib
 author:
   - name: Daniel Daza Macias
@@ -28,9 +28,7 @@ appendix-style: default
 
 El siguiente trabajo tiene como objetivo la realización de una scorecard que permita a las personas calcular su puntaje crediticio de manera sencilla.
 
-Para realizar utilizamos la base de datos proporcionada por @DataWebsite.
-
-
+Para realizar el siguiente reporte utilizamos la base de datos proporcionada por el docente del curso de Técnicas en Aprendizaje Estadístico de la Universidad Nacional de Colombia.
 
 ## Importe y análisis de datos
 
@@ -416,27 +414,45 @@ Para comenzar se hará un análisis rápido del IV de cada variable teniendo en 
 #| label: tbl-iv-res-cont
 
 
+res_to_print={"loan_amnt":	0.00568593,
+"int_rate":	0.334257,
+"emp_length":	0.0046393,
+"annual_inc":	"inf",
+"dti":	0.0266219,
+"delinq_2yrs":	"inf",
+"inq_last_6mths":	"inf",
+"open_acc":	"inf",
+"pub_rec":	"inf",
+"revol_bal":	"inf",
+"revol_util":	"inf",
+"out_prncp":	0.645187,
+"last_pymnt_amnt":	"inf",
+"collections_12_mths_ex_med":	"inf",
+"acc_now_delinq":	"inf",
+"tot_coll_amt":	"inf",
+"tot_cur_bal":	"inf"}
 
-resultados_cont_iv=dict()
-continuous_variabe_name=['loan_amnt', 'int_rate', 
-       'emp_length', 'annual_inc', 
-       'dti', 'delinq_2yrs', 'inq_last_6mths', 'open_acc',
-       'pub_rec', 'revol_bal', 'revol_util', 'out_prncp', 'last_pymnt_amnt',
-       'collections_12_mths_ex_med', 'acc_now_delinq',
-       'tot_coll_amt', 'tot_cur_bal']
 
-no_se_cortan = set(['emp_length', 'delinq_2yrs', 'inq_last_6mths', 'pub_rec', 'collections_12_mths_ex_med', 'acc_now_delinq'])
+# resultados_cont_iv=dict()
+# continuous_variabe_name=['loan_amnt', 'int_rate', 
+#        'emp_length', 'annual_inc', 
+#        'dti', 'delinq_2yrs', 'inq_last_6mths', 'open_acc',
+#        'pub_rec', 'revol_bal', 'revol_util', 'out_prncp', 'last_pymnt_amnt',
+#        'collections_12_mths_ex_med', 'acc_now_delinq',
+#        'tot_coll_amt', 'tot_cur_bal']
 
-for continua in continuous_variabe_name:
-  if continua in no_se_cortan:
-    resultados_cont_iv[continua] = woe_ordered_continuous(X_train_prepr, continua, y_train_prepr)["IV"][0]
-  else:
-    nombre = continua+"_factor"
-    X_train_prepr[nombre] = pd.cut(X_train_prepr[continua], 20)
-    resultados_cont_iv[continua] = woe_ordered_continuous(X_train_prepr, nombre, y_train_prepr)["IV"][0]
-  
+# no_se_cortan = set(['emp_length', 'delinq_2yrs', 'inq_last_6mths', 'pub_rec', 'collections_12_mths_ex_med', 'acc_now_delinq'])
 
-table = [[i, j] for i,j in resultados_cont_iv.items()]
+# for continua in continuous_variabe_name:
+#   if continua in no_se_cortan:
+#     resultados_cont_iv[continua] = woe_ordered_continuous(X_train_prepr, continua, y_train_prepr)["IV"][0]
+#   else:
+#     nombre = continua+"_factor"
+#     X_train_prepr[nombre] = pd.cut(X_train_prepr[continua], 20)
+#     resultados_cont_iv[continua] = woe_ordered_continuous(X_train_prepr, nombre, y_train_prepr)["IV"][0]
+
+
+table = [[i, j] for i,j in res_to_print.items()]
 
 Markdown(tabulate(
   table, 
@@ -540,7 +556,7 @@ ensayitos_temp['revol_util_factor'] = pd.cut(ensayitos_temp['revol_util'], 20)
 woe_ordered_continuous(ensayitos_temp, 'revol_util_factor',  y_train_prepr[ensayitos_temp.index])
 ```
 
-Continuaremos con la variable last_pymnt_amnt que como se puede notar en @tbl-iv-last_pymnt_amnt	tiene un IV [TODO] menor a 0.02 considerando valores menores o iguales a 20, por lo que no la mantendremos para el ajuste del modelo.
+Continuaremos con la variable last_pymnt_amnt que como se puede notar en @tbl-iv-last_pymnt_amnt	tiene un IV en infinito incluso luego de haber manejado algunos outliers, por lo que no la mantendremos para el ajuste del modelo.
 
 ```{python}
 #| tbl-cap: IV de last_pymnt_amnt
@@ -548,9 +564,9 @@ Continuaremos con la variable last_pymnt_amnt que como se puede notar en @tbl-iv
 
 #ensayitos['revol_util_factor'] = pd.cut(ensayitos['revol_util'], 20)
 #woe_ordered_continuous(ensayitos, 'revol_util_factor', y_train_prepr)
-
-ensayitos['last_pymnt_amnt_factor'] = pd.cut(ensayitos['last_pymnt_amnt'], 3)
-woe_ordered_continuous(ensayitos, 'last_pymnt_amnt_factor', y_train_prepr)
+ensayitos_temp = ensayitos[ensayitos['last_pymnt_amnt']<=12000].copy()
+ensayitos_temp['last_pymnt_amnt_factor'] = pd.cut(ensayitos_temp['last_pymnt_amnt'], 20)
+woe_ordered_continuous(ensayitos_temp, 'last_pymnt_amnt_factor',  y_train_prepr[ensayitos_temp.index])
 ```
 
 Continuaremos con la variable collections_12_mths_ex_med que como se puede notar en @tbl-iv-collections_12_mths_ex_med	tiene un IV menor a 0.02 considerando valores menores o iguales a 2, por lo que no la mantendremos para el ajuste del modelo.
@@ -814,11 +830,11 @@ summary_table.sort_index(inplace = True)
 summary_table
 ``` 
 
-Ya con el modelo entrenado y con coeficientes para cada una de las variables como se puede ver en @tbl-model-summary se procederán a analizar resultados del ajuste:
+Ya con el modelo entrenado y con coeficientes para cada una de las variables como se puede ver en @tbl-model-summary se procederán a analizar resultados del ajuste: 
+
+![Matriz de confusion](fig_m1.png){#fig-matriz-conf}
 
 ```{python}
-#| fig-cap: Matriz de confusión
-#| label: fig-matriz-corr-1
 
 # make preditions on our test set
 y_hat_test = pipeline.predict(X_test)
@@ -843,35 +859,22 @@ y_test_proba.columns = ['y_test_class_actual', 'y_hat_test_proba']
 y_test_proba.index = X_test.index
 
 
-import seaborn as sns
-# assign a threshold value to differentiate good with bad
-tr = 0.5
-# crate a new column for the predicted class based on predicted probabilities and threshold
-# We will determine this optimat threshold later in this project
-y_test_proba['y_test_class_predicted'] = np.where(y_test_proba['y_hat_test_proba'] > tr, 1, 0)
-# create the confusion matrix
-cm1 = confusion_matrix(y_test_proba['y_test_class_actual'], y_test_proba['y_test_class_predicted'], normalize = 'all')
-sns.heatmap(cm1,annot=True,cbar=False)
+# import seaborn as sns
+# # assign a threshold value to differentiate good with bad
+# tr = 0.5
+# # crate a new column for the predicted class based on predicted probabilities and threshold
+# # We will determine this optimat threshold later in this project
+# y_test_proba['y_test_class_predicted'] = np.where(y_test_proba['y_hat_test_proba'] > tr, 1, 0)
+# # create the confusion matrix
+# cm1 = confusion_matrix(y_test_proba['y_test_class_actual'], y_test_proba['y_test_class_predicted'], normalize = 'all')
+# sns.heatmap(cm1,annot=True,cbar=False)
 
 ```
 
-Como se puede ver en @fig-matriz-corr-1 el modelo ajustado es muy bueno para predecir verdaderos positivos, pero no para verdaderos negativos que los termina pasando como falsos positivos, lo que en contexto significaría otorgar créditos a muchas personas.
+Como se puede ver en @fig-matriz-conf el modelo ajustado es muy bueno para predecir verdaderos positivos, pero no para verdaderos negativos que los termina pasando como falsos positivos, lo que en contexto significaría otorgar créditos a muchas personas.
 
-```{python}
-#| fig-cap: Curva de 
-#| label: fig-roc-curve-1
+![Curva ROC](fig_m2.png){#fig-roc-curve-1}
 
-
-# get the values required to plot a ROC curve
-fpr, tpr, thresholds = roc_curve(y_test_proba['y_test_class_actual'], y_test_proba['y_hat_test_proba'])
-# plot the ROC curve
-plt.plot(fpr, tpr)
-# plot a secondary diagonal line, with dashed line style and black color to represent a no-skill classifier
-plt.plot(fpr, fpr, linestyle = '--', color = 'k')
-plt.xlabel('False positive rate')
-plt.ylabel('True positive rate')
-plt.title('ROC curve')
-```
 
 En @fig-roc-curve-1 podemos observar el rendimiento de la curva de roc donde se nota que la convergencia a uno es relativamente rápida.  Por otra parte obtenemos un valor AUROC de 0.7751, es decir la probabilidad de que a una persona le aprueben un crédito y que en efecto cumple las caracteristicas para ser aprobado es del 77%.
 
@@ -920,7 +923,7 @@ df_scorecard
 
 Esta tabla tiene un uso muy básico, el cual se puede describir con la siguiente fórmula, en la que multiplicamos el valor de cada característica obtenida del usuario por el respectivo score final que encontramos en la tabla.
 
-score = 598 + grade:A(56) + grade:B(34) + … + tot_cur_bal:400000-500000(13)
+score = 598 + grade:A(54) + grade:B(32) + … + tot_cur_bal:400000-500000(13)
 
 En este caso el intercepto corresponde al valor inicial para cada usuario antes de realizar el cálculo, donde dependiendo de los valores que tenga asociado a cada característica se suma o se resta para obtener un valor final de scored.
 
@@ -944,6 +947,11 @@ Teniendo en cuenta esto y calculando el scorecard para cada uno de los datos que
 
 De @fig-scard-distr podemos notar que la media del scores es de 456, lo cual se encuentra en el rango más bajo de los puntajes crediticios, ya que está por debajo del quantil 25, además se observa que la distribución del score es bimodal ya que tiene dos picos, uno alrededor de 500 y el segundo alrededor de los 600.
 
+### Variables más riesgosas
+
+En la gráfica @fig-riesgo podemos observar el valor que aporta cada característica al scorcad final, teniendo en cuenta que el valor de referencia es el intercepto. En la gráfica superior podemos ver que la característica que más resta puntaje al cliente en su score es out_pmcp>1.286, seguida por los grados E y F, también se puede observar que la que menos le aporta negativamente es dti:15.196-19.195. En la gráfica inferior se tienen los diferentes pesos que aportan las características a los prestarios de manera positiva, por ejemplo el grado A es la que tiene un aporte de 54 aproximadamente, seguida por int_rate: < 7.071 y grado B, además se ve que la que tiene un menor aporte de manera positiva es reovol_ultiil:0.4-0.5.
+
+![Analisis de variables más riesgoas](fig_3_riesgo.png){#fig-riesgo}
 
 
 ---

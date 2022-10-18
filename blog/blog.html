@@ -12,7 +12,7 @@
 <meta name="author" content="Marlon Calle Areiza">
 <meta name="author" content="Ronald Gabriel Palencia">
 
-<title>Creacion ScoreCard</title>
+<title>Creacion scorecard para calculo de puntaje crediticio a partir de un modelo predictivo</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -88,6 +88,7 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#ajuste-del-modelo" id="toc-ajuste-del-modelo" class="nav-link" data-scroll-target="#ajuste-del-modelo">Ajuste del modelo</a></li>
   <li><a href="#creación-de-scorecard" id="toc-creación-de-scorecard" class="nav-link" data-scroll-target="#creación-de-scorecard">Creación de scorecard</a></li>
+  <li><a href="#variables-más-riesgosas" id="toc-variables-más-riesgosas" class="nav-link" data-scroll-target="#variables-más-riesgosas">Variables más riesgosas</a></li>
   </ul></li>
   <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias">Referencias</a></li>
   </ul>
@@ -97,7 +98,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Creacion ScoreCard</h1>
+<h1 class="title">Creacion scorecard para calculo de puntaje crediticio a partir de un modelo predictivo</h1>
 </div>
 
 
@@ -123,14 +124,14 @@ div.csl-indent {
 
 <section id="introducción" class="level2">
 <h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
-<p>El siguiente trabajo tiene como objetivo la realización de una scorecard que ubique a las personas en un punto de [TODO]</p>
-<p>Para realizar utilizamos la base de datos proporcionada por <span class="citation" data-cites="DataWebsite">U.S. Department of Education (<a href="#ref-DataWebsite" role="doc-biblioref">2016</a>)</span>.</p>
+<p>El siguiente trabajo tiene como objetivo la realización de una scorecard que permita a las personas calcular su puntaje crediticio de manera sencilla.</p>
+<p>Para realizar el siguiente reporte utilizamos la base de datos proporcionada por el docente del curso de Técnicas en Aprendizaje Estadístico de la Universidad Nacional de Colombia.</p>
 </section>
 <section id="importe-y-análisis-de-datos" class="level2">
 <h2 class="anchored" data-anchor-id="importe-y-análisis-de-datos">Importe y análisis de datos</h2>
 <p>Para comenzar se hará un cargue del conjunto de datos:</p>
 <div class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="36">
 <div id="tbl-import-presentacion-inicial" class="anchored">
 
 <div>
@@ -200,7 +201,7 @@ div.csl-indent {
 <h3 class="anchored" data-anchor-id="selección-y-transformación-de-variables">Selección y transformación de variables</h3>
 <p>Para comenzar a seleccionar variables y como nuestro interés de acuerdo al objetivo es tener la mayor cantidad de datos sin imputar obviaremos para el ajuste del modelo aquellas cuya cantidad de datos nulos sea mayor al 70%, dichas variables se pueden ver en <a href="#tbl-variables-nulos">Table&nbsp;2</a></p>
 <div class="cell" data-execution_count="3">
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="38">
 <div id="tbl-variables-nulos" class="anchored">
 <table class="table table-sm table-striped">
 <caption>Table&nbsp;2: Variables con porcentaje de nulo mayor al 30%</caption>
@@ -304,10 +305,10 @@ div.csl-indent {
 <p></p><figcaption class="figure-caption">Figure&nbsp;1: Matriz de correlacion</figcaption><p></p>
 </figure>
 </div>
-<p>Así y de acuerdo <a href="#fig-matriz-corr-1">Figure&nbsp;2</a> se eliminarán aquellas columnas que posean un correlación de al menos 60% es decir las variables: ‘total_rec_int’, ‘total_pymnt_inv’, ‘total_pymnt’, ‘installment’, ‘funded_amnt’, ‘funded_amnt_inv’, ‘out_prncp_inv’, ‘total_acc’ y ‘total_rev_hi_lim’.</p>
+<p>Así y de acuerdo <a href="#fig-matriz-corr-1">Figure&nbsp;1</a> se eliminarán aquellas columnas que posean un correlación de al menos 60% es decir las variables: ‘total_rec_int’, ‘total_pymnt_inv’, ‘total_pymnt’, ‘installment’, ‘funded_amnt’, ‘funded_amnt_inv’, ‘out_prncp_inv’, ‘total_acc’ y ‘total_rev_hi_lim’.</p>
 <p>Al final resultaríamos con las variables encontradas en <a href="#tbl-variables-resultantes">Table&nbsp;3</a>, donde aquellas de tipo object son las que reconoceremos como categóricas para posterior análisis y transformación:</p>
 <div class="cell" data-execution_count="5">
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="40">
 <div id="tbl-variables-resultantes" class="anchored">
 <table class="table table-sm table-striped">
 <caption>Table&nbsp;3: Variables resultantes y tipos</caption>
@@ -459,7 +460,7 @@ div.csl-indent {
 <h4 class="anchored" data-anchor-id="transformación-de-variables-categóricas">Transformación de variables categóricas</h4>
 <p>Para comenzar cambiaremos los valores categóricos de la variable emp_length por la cantidad de años como se puede observar en <a href="#tbl-cam-var-1">Table&nbsp;4</a>.</p>
 <div class="cell" data-execution_count="6">
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="41">
 <div id="tbl-cam-var-1" class="anchored">
 <table class="table table-sm table-striped">
 <caption>Table&nbsp;4: Cambio en variable emp_length</caption>
@@ -533,7 +534,7 @@ div.csl-indent {
 </div>
 <p>Continuando, se pasará a eliminar la columna ‘pymnt_plan’ ya que solo tiene el 0.0019% de valores en yes frente al resto de no como se puede ver en <a href="#tbl-cam-var-2">Table&nbsp;5</a> por lo que no la consideraremos como muy aportante al modelo.</p>
 <div class="cell" data-execution_count="7">
-<div class="cell-output cell-output-display" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="42">
 <div id="tbl-cam-var-2" class="anchored">
 <table class="table table-sm table-striped">
 <caption>Table&nbsp;5: Eliminación variable pymnt_plan</caption>
@@ -567,7 +568,7 @@ div.csl-indent {
 <p>Como se puede ver en <a href="#tbl-cantidad-nulos-final">Table&nbsp;6</a> donde se encuentran las variables resultantes y la cantidad de nulos de cada uno debemos hacer una imputación, dicha imputación consistirá en reemplazar valores nulos por la moda, en el caso de las variables categóricas, y por la mediana en el caso de las continuas.</p>
 <p>Dicha imputación se planteará en una función pero sólo se aplicará debidamente luego de dividir el conjunto de datos en datos de entrenamiento y datos de testeo.</p>
 <div class="cell" data-execution_count="8">
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="43">
 <div id="tbl-cantidad-nulos-final" class="anchored">
 <table class="table table-sm table-striped">
 <caption>Table&nbsp;6: Cantidad de nulos en variables resultatnes</caption>
@@ -677,7 +678,7 @@ div.csl-indent {
 </div>
 <p>A continuación aplicaremos la división de datos de 80% y 20% para entrenamiento y testeo respectivamente:</p>
 <div class="cell" data-execution_count="9">
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="44">
 <div id="tbl-x-train-inicial" class="anchored">
 
 <div>
@@ -910,7 +911,7 @@ div.csl-indent {
 </div>
 </div>
 <div class="cell" data-execution_count="10">
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="45">
 <div id="tbl-x-test-inicial" class="anchored">
 
 <div>
@@ -1148,7 +1149,7 @@ div.csl-indent {
 <h3 class="anchored" data-anchor-id="análisis-de-iv-para-variables-categóricas">Análisis de IV para variables categóricas</h3>
 <p>Comenzaremos analizando la variable home_ownership que como se puede notar en <a href="#tbl-iv-home_ownership">Table&nbsp;9</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="12">
-<div class="cell-output cell-output-display" data-execution_count="12">
+<div class="cell-output cell-output-display" data-execution_count="47">
 <div id="tbl-iv-home_ownership" class="anchored">
 
 <div>
@@ -1255,7 +1256,7 @@ div.csl-indent {
 </div>
 <p>Continuaremos analizando la variable verification_status que como se puede notar en <a href="#tbl-iv-verification_status">Table&nbsp;10</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="13">
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="48">
 <div id="tbl-iv-verification_status" class="anchored">
 
 <div>
@@ -1332,7 +1333,7 @@ div.csl-indent {
 </div>
 <p>Así analizando la variable purpose que como se puede notar en <a href="#tbl-iv-purpose">Table&nbsp;11</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="14">
-<div class="cell-output cell-output-display" data-execution_count="14">
+<div class="cell-output cell-output-display" data-execution_count="49">
 <div id="tbl-iv-purpose" class="anchored">
 
 <div>
@@ -1574,7 +1575,7 @@ div.csl-indent {
 </div>
 <p>Así analizando la variable grade que como se puede notar en <a href="#tbl-iv-grade">Table&nbsp;12</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="15">
-<div class="cell-output cell-output-display" data-execution_count="15">
+<div class="cell-output cell-output-display" data-execution_count="50">
 <div id="tbl-iv-grade" class="anchored">
 
 <div>
@@ -1711,7 +1712,7 @@ div.csl-indent {
 </div>
 <p>Así analizando la variable term que como se puede notar en <a href="#tbl-iv-term">Table&nbsp;13</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="16">
-<div class="cell-output cell-output-display" data-execution_count="16">
+<div class="cell-output cell-output-display" data-execution_count="51">
 <div id="tbl-iv-term" class="anchored">
 
 <div>
@@ -1773,7 +1774,7 @@ div.csl-indent {
 </div>
 <p>Por lo que concluimos seleccionando todas las variables categóricas como se puede ver en el resumen de <a href="#tbl-iv-cat-res">Table&nbsp;14</a>.</p>
 <div class="cell" data-execution_count="17">
-<div class="cell-output cell-output-display" data-execution_count="17">
+<div class="cell-output cell-output-display" data-execution_count="52">
 <div id="tbl-iv-cat-res" class="anchored">
 <table class="table table-sm table-striped">
 <caption>Table&nbsp;14: IV de variables categóricas</caption>
@@ -1814,13 +1815,7 @@ div.csl-indent {
 <h3 class="anchored" data-anchor-id="análisis-de-iv-para-numéricas">Análisis de IV para numéricas</h3>
 <p>Para comenzar se hará un análisis rápido del IV de cada variable teniendo en cuenta todas las observaciones del X_train, dividiendo variables continuas en 20 intervalos y no continuas en cantidad de valores únicos:</p>
 <div class="cell" data-execution_count="18">
-<div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\marlo\AppData\Local\Programs\Python\Python310\lib\site-packages\pandas\core\arraylike.py:364: RuntimeWarning:
-
-divide by zero encountered in log
-</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="53">
 <div id="tbl-iv-res-cont" class="anchored">
 <table class="table table-sm table-striped">
 <caption>Table&nbsp;15: Resumen de IV para variables continuas</caption>
@@ -1907,7 +1902,7 @@ divide by zero encountered in log
 <p>Como se puede observar en <a href="#tbl-iv-res-cont">Table&nbsp;15</a> hay algunas variables cuyo valor de información es inf, esto se debe a la cantidad de observaciones positivas o negativas en algunos de los intervalos. Para controlar esto haremos el análisis de aquellas variables cuidando de posibles outliers que dificulten dicha división en intervalos</p>
 <p>Así comenzaremos analizando la variable annual_inc que como se puede notar en <a href="#tbl-iv-annual_inc">Table&nbsp;16</a> tiene un IV mayor de 0.02 considerando valores menores o iguales a 150000, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="19">
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="54">
 <div id="tbl-iv-annual_inc" class="anchored">
 
 <div>
@@ -2239,7 +2234,7 @@ divide by zero encountered in log
 </div>
 <p>Continuaremos con la variable delinq_2yrs que como se puede notar en <a href="#tbl-iv-delinq_2yrs">Table&nbsp;17</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 10, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="20">
-<div class="cell-output cell-output-display" data-execution_count="20">
+<div class="cell-output cell-output-display" data-execution_count="55">
 <div id="tbl-iv-delinq_2yrs" class="anchored">
 
 <div>
@@ -2436,7 +2431,7 @@ divide by zero encountered in log
 </div>
 <p>Continuaremos con la variable inq_last_6mths que como se puede notar en <a href="#tbl-iv-inq_last_6mths">Table&nbsp;18</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 5, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="21">
-<div class="cell-output cell-output-display" data-execution_count="21">
+<div class="cell-output cell-output-display" data-execution_count="56">
 <div id="tbl-iv-inq_last_6mths" class="anchored">
 
 <div>
@@ -2603,7 +2598,7 @@ divide by zero encountered in log
 </div>
 <p>Continuaremos con la variable open_acc que como se puede notar en <a href="#tbl-iv-open_acc">Table&nbsp;19</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 28, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="22">
-<div class="cell-output cell-output-display" data-execution_count="22">
+<div class="cell-output cell-output-display" data-execution_count="57">
 <div id="tbl-iv-open_acc" class="anchored">
 
 <div>
@@ -2935,7 +2930,7 @@ divide by zero encountered in log
 </div>
 <p>Continuaremos con la variable pub_rec que como se puede notar en <a href="#tbl-iv-pub_rec">Table&nbsp;20</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 0.9, por lo que no la mantendremos para el ajuste del modelo pues además, como se puede notar en la misma tabla, es complicado realizar una división en intervalos suficiente para que dicha variable entregue un IV aceptable.</p>
 <div class="cell" data-execution_count="23">
-<div class="cell-output cell-output-display" data-execution_count="23">
+<div class="cell-output cell-output-display" data-execution_count="58">
 <div id="tbl-iv-pub_rec" class="anchored">
 
 <div>
@@ -3267,7 +3262,7 @@ divide by zero encountered in log
 </div>
 <p>Continuaremos con la variable revol_bal que como se puede notar en <a href="#tbl-iv-revol_bal">Table&nbsp;21</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 60000, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="24">
-<div class="cell-output cell-output-display" data-execution_count="24">
+<div class="cell-output cell-output-display" data-execution_count="59">
 <div id="tbl-iv-revol_bal" class="anchored">
 
 <div>
@@ -3599,7 +3594,7 @@ divide by zero encountered in log
 </div>
 <p>Continuaremos con la variable revol_util que como se puede notar en <a href="#tbl-iv-revol_util">Table&nbsp;22</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 105, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="25">
-<div class="cell-output cell-output-display" data-execution_count="25">
+<div class="cell-output cell-output-display" data-execution_count="60">
 <div id="tbl-iv-revol_util" class="anchored">
 
 <div>
@@ -3929,9 +3924,9 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable last_pymnt_amnt que como se puede notar en <a href="#tbl-iv-last_pymnt_amnt">Table&nbsp;23</a> tiene un IV [TODO] menor a 0.02 considerando valores menores o iguales a 20, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable last_pymnt_amnt que como se puede notar en <a href="#tbl-iv-last_pymnt_amnt">Table&nbsp;23</a> tiene un IV en infinito incluso luego de haber manejado algunos outliers, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="26">
-<div class="cell-output cell-output-display" data-execution_count="26">
+<div class="cell-output cell-output-display" data-execution_count="61">
 <div id="tbl-iv-last_pymnt_amnt" class="anchored">
 
 <div>
@@ -3957,48 +3952,303 @@ divide by zero encountered in log
   <tbody>
     <tr>
       <th>0</th>
-      <td>(-36.17, 12056.713]</td>
-      <td>341581</td>
-      <td>0.880708</td>
-      <td>0.915698</td>
-      <td>300833.0</td>
-      <td>40748.0</td>
-      <td>0.905431</td>
-      <td>0.999362</td>
-      <td>-0.098707</td>
+      <td>(-12.0, 600.0]</td>
+      <td>200512</td>
+      <td>0.842274</td>
+      <td>0.587404</td>
+      <td>168886.0</td>
+      <td>31626.0</td>
+      <td>0.561820</td>
+      <td>0.776136</td>
+      <td>-0.323146</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>0.479178</td>
+      <td>inf</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>(12056.713, 24113.427]</td>
-      <td>26386</td>
-      <td>0.999204</td>
-      <td>0.070735</td>
-      <td>26365.0</td>
-      <td>21.0</td>
-      <td>0.079352</td>
-      <td>0.000515</td>
-      <td>5.037415</td>
-      <td>0.118496</td>
-      <td>5.136122</td>
-      <td>0.479178</td>
+      <td>(600.0, 1200.0]</td>
+      <td>58522</td>
+      <td>0.859301</td>
+      <td>0.171441</td>
+      <td>50288.0</td>
+      <td>8234.0</td>
+      <td>0.167289</td>
+      <td>0.202071</td>
+      <td>-0.188896</td>
+      <td>0.017027</td>
+      <td>0.134250</td>
+      <td>inf</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>(24113.427, 36170.14]</td>
-      <td>5061</td>
-      <td>0.999012</td>
-      <td>0.013567</td>
-      <td>5056.0</td>
+      <td>(1200.0, 1800.0]</td>
+      <td>7658</td>
+      <td>0.915121</td>
+      <td>0.022434</td>
+      <td>7008.0</td>
+      <td>650.0</td>
+      <td>0.023313</td>
+      <td>0.015952</td>
+      <td>0.379445</td>
+      <td>0.055821</td>
+      <td>0.568341</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>(1800.0, 2400.0]</td>
+      <td>5756</td>
+      <td>0.979326</td>
+      <td>0.016862</td>
+      <td>5637.0</td>
+      <td>119.0</td>
+      <td>0.018752</td>
+      <td>0.002920</td>
+      <td>1.859593</td>
+      <td>0.064204</td>
+      <td>1.480149</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>(2400.0, 3000.0]</td>
+      <td>5691</td>
+      <td>0.992620</td>
+      <td>0.016672</td>
+      <td>5649.0</td>
+      <td>42.0</td>
+      <td>0.018792</td>
+      <td>0.001031</td>
+      <td>2.903174</td>
+      <td>0.013294</td>
+      <td>1.043580</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>(3000.0, 3600.0]</td>
+      <td>5647</td>
+      <td>0.996990</td>
+      <td>0.016543</td>
+      <td>5630.0</td>
+      <td>17.0</td>
+      <td>0.018729</td>
+      <td>0.000417</td>
+      <td>3.804261</td>
+      <td>0.004370</td>
+      <td>0.901087</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>(3600.0, 4200.0]</td>
+      <td>5670</td>
+      <td>0.997531</td>
+      <td>0.016610</td>
+      <td>5656.0</td>
+      <td>14.0</td>
+      <td>0.018815</td>
+      <td>0.000344</td>
+      <td>4.003025</td>
+      <td>0.000541</td>
+      <td>0.198764</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>(4200.0, 4800.0]</td>
+      <td>5572</td>
+      <td>0.998385</td>
+      <td>0.016323</td>
+      <td>5563.0</td>
+      <td>9.0</td>
+      <td>0.018506</td>
+      <td>0.000221</td>
+      <td>4.428278</td>
+      <td>0.000854</td>
+      <td>0.425253</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>(4800.0, 5400.0]</td>
+      <td>5504</td>
+      <td>0.998547</td>
+      <td>0.016124</td>
+      <td>5496.0</td>
+      <td>8.0</td>
+      <td>0.018283</td>
+      <td>0.000196</td>
+      <td>4.533944</td>
+      <td>0.000162</td>
+      <td>0.105666</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>(5400.0, 6000.0]</td>
+      <td>5032</td>
+      <td>0.999006</td>
+      <td>0.014741</td>
+      <td>5027.0</td>
       <td>5.0</td>
-      <td>0.015217</td>
+      <td>0.016723</td>
       <td>0.000123</td>
-      <td>4.821038</td>
-      <td>0.000192</td>
-      <td>0.216377</td>
-      <td>0.479178</td>
+      <td>4.914750</td>
+      <td>0.000460</td>
+      <td>0.380806</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>(6000.0, 6600.0]</td>
+      <td>4701</td>
+      <td>0.999575</td>
+      <td>0.013772</td>
+      <td>4699.0</td>
+      <td>2.0</td>
+      <td>0.015632</td>
+      <td>0.000049</td>
+      <td>5.763567</td>
+      <td>0.000568</td>
+      <td>0.848817</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>(6600.0, 7200.0]</td>
+      <td>4453</td>
+      <td>0.998877</td>
+      <td>0.013045</td>
+      <td>4448.0</td>
+      <td>5.0</td>
+      <td>0.014797</td>
+      <td>0.000123</td>
+      <td>4.792382</td>
+      <td>0.000697</td>
+      <td>0.971186</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>(7200.0, 7800.0]</td>
+      <td>4097</td>
+      <td>0.999512</td>
+      <td>0.012002</td>
+      <td>4095.0</td>
+      <td>2.0</td>
+      <td>0.013623</td>
+      <td>0.000049</td>
+      <td>5.625984</td>
+      <td>0.000635</td>
+      <td>0.833603</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>(7800.0, 8400.0]</td>
+      <td>3925</td>
+      <td>0.999745</td>
+      <td>0.011498</td>
+      <td>3924.0</td>
+      <td>1.0</td>
+      <td>0.013054</td>
+      <td>0.000025</td>
+      <td>6.276476</td>
+      <td>0.000233</td>
+      <td>0.650492</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>(8400.0, 9000.0]</td>
+      <td>3621</td>
+      <td>0.998343</td>
+      <td>0.010608</td>
+      <td>3615.0</td>
+      <td>6.0</td>
+      <td>0.012026</td>
+      <td>0.000147</td>
+      <td>4.402697</td>
+      <td>0.001402</td>
+      <td>1.873779</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>(9000.0, 9600.0]</td>
+      <td>3437</td>
+      <td>1.000000</td>
+      <td>0.010069</td>
+      <td>3437.0</td>
+      <td>0.0</td>
+      <td>0.011434</td>
+      <td>0.000000</td>
+      <td>inf</td>
+      <td>0.001657</td>
+      <td>inf</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>(9600.0, 10200.0]</td>
+      <td>3387</td>
+      <td>0.998524</td>
+      <td>0.009922</td>
+      <td>3382.0</td>
+      <td>5.0</td>
+      <td>0.011251</td>
+      <td>0.000123</td>
+      <td>4.518394</td>
+      <td>0.001476</td>
+      <td>inf</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>(10200.0, 10800.0]</td>
+      <td>2844</td>
+      <td>0.999297</td>
+      <td>0.008332</td>
+      <td>2842.0</td>
+      <td>2.0</td>
+      <td>0.009454</td>
+      <td>0.000049</td>
+      <td>5.260726</td>
+      <td>0.000773</td>
+      <td>0.742332</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>(10800.0, 11400.0]</td>
+      <td>2728</td>
+      <td>0.999633</td>
+      <td>0.007992</td>
+      <td>2727.0</td>
+      <td>1.0</td>
+      <td>0.009072</td>
+      <td>0.000025</td>
+      <td>5.912567</td>
+      <td>0.000337</td>
+      <td>0.651841</td>
+      <td>inf</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>(11400.0, 12000.0]</td>
+      <td>2596</td>
+      <td>1.000000</td>
+      <td>0.007605</td>
+      <td>2596.0</td>
+      <td>0.0</td>
+      <td>0.008636</td>
+      <td>0.000000</td>
+      <td>inf</td>
+      <td>0.000367</td>
+      <td>inf</td>
+      <td>inf</td>
     </tr>
   </tbody>
 </table>
@@ -4008,7 +4258,7 @@ divide by zero encountered in log
 </div>
 <p>Continuaremos con la variable collections_12_mths_ex_med que como se puede notar en <a href="#tbl-iv-collections_12_mths_ex_med">Table&nbsp;24</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 2, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="27">
-<div class="cell-output cell-output-display" data-execution_count="27">
+<div class="cell-output cell-output-display" data-execution_count="62">
 <div id="tbl-iv-collections_12_mths_ex_med" class="anchored">
 
 <div>
@@ -4085,7 +4335,7 @@ divide by zero encountered in log
 </div>
 <p>Continuaremos con la variable acc_now_delinq que como se puede notar en <a href="#tbl-iv-acc_now_delinq">Table&nbsp;25</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 0, por lo que no la mantendremos para el ajuste del modelo pues además, como se puede notar en la misma tabla, es complicado realizar una división en intervalos suficiente para que dicha variable entregue un IV aceptable.</p>
 <div class="cell" data-execution_count="28">
-<div class="cell-output cell-output-display" data-execution_count="28">
+<div class="cell-output cell-output-display" data-execution_count="63">
 <div id="tbl-iv-acc_now_delinq" class="anchored">
 
 <div>
@@ -4417,7 +4667,7 @@ divide by zero encountered in log
 </div>
 <p>Continuaremos con la variable tot_coll_amt que como se puede notar en <a href="#tbl-iv-tot_coll_amt">Table&nbsp;26</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 750, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="29">
-<div class="cell-output cell-output-display" data-execution_count="29">
+<div class="cell-output cell-output-display" data-execution_count="64">
 <div id="tbl-iv-tot_coll_amt" class="anchored">
 
 <div>
@@ -4749,7 +4999,7 @@ divide by zero encountered in log
 </div>
 <p>Continuaremos con la variable tot_cur_bal que como se puede notar en <a href="#tbl-iv-tot_cur_bal">Table&nbsp;27</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 500000, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="30">
-<div class="cell-output cell-output-display" data-execution_count="30">
+<div class="cell-output cell-output-display" data-execution_count="65">
 <div id="tbl-iv-tot_cur_bal" class="anchored">
 
 <div>
@@ -5175,7 +5425,7 @@ divide by zero encountered in log
 <h2 class="anchored" data-anchor-id="ajuste-del-modelo-y-realización-de-scorecard">Ajuste del modelo y realización de Scorecard</h2>
 <p>Para continuar con el ajuste del modelo ya con las variables escogidas se hará una pipeline que tratará el conjunto de datos de diferentes maneras: Para las variables continuas se crearán variables dummies de intervalos, el último de ellos tendiendo a infinito, y se transformará el valor de la variable de cada observación en 1 y 0’s de acuerdo al intervalo en el que caiga dicho valor. Para las variables categórica simplemente se crearán variabes dummies y se procederá como un OneHotEncoding normal. Esto se puede observar en <a href="#tbl-pre-datos-1">Table&nbsp;28</a>.</p>
 <div class="cell" data-execution_count="31">
-<div class="cell-output cell-output-display" data-execution_count="31">
+<div class="cell-output cell-output-display" data-execution_count="66">
 <div id="tbl-pre-datos-1" class="anchored">
 
 <div>
@@ -5411,7 +5661,7 @@ divide by zero encountered in log
 <h3 class="anchored" data-anchor-id="ajuste-del-modelo">Ajuste del modelo</h3>
 <p>Para el ajuste del modelo se usará regresión logística cuyos parametros serán, y de acuerdo a un GridSearchCV realizado, max_iter=1000 y class_weight=‘auto’. A dicho modelo se la pasará un conjunto de datos que habrá pasado por la pipeline mencionada anteriormente:</p>
 <div class="cell" data-execution_count="32">
-<div class="cell-output cell-output-display" data-execution_count="32">
+<div class="cell-output cell-output-display" data-execution_count="67">
 <div id="tbl-model-summary" class="anchored">
 
 <div>
@@ -5488,43 +5738,17 @@ divide by zero encountered in log
 </div>
 </div>
 <p>Ya con el modelo entrenado y con coeficientes para cada una de las variables como se puede ver en <a href="#tbl-model-summary">Table&nbsp;29</a> se procederán a analizar resultados del ajuste:</p>
-<div id="fig-matriz-corr-1" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-matriz-conf" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="fig-matriz-corr-1-1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<pre><code>&lt;AxesSubplot:&gt;</code></pre>
-<p></p><figcaption class="figure-caption">(a) Matriz de confusión</figcaption><p></p>
+<p><img src="fig_m1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Matriz de confusion</figcaption><p></p>
 </figure>
 </div>
-<div class="cell-output cell-output-display">
-<div id="fig-matriz-corr-1-2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="blog_files/figure-html/fig-matriz-corr-1-output-2.png" data-ref-parent="fig-matriz-corr-1" width="562" height="411" class="figure-img"></p>
-<p></p><figcaption class="figure-caption">(b)</figcaption><p></p>
-</figure>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2: <strong>?(caption)</strong></figcaption><p></p>
-</figure>
-</div>
-<p>Como se puede ver en <a href="#fig-matriz-corr-1">Figure&nbsp;2</a> el modelo ajustado es muy bueno para predecir verdaderos positivos, pero no para verdaderos negativos que los termina pasando como falsos positivos, lo que en contexto significaría otorgar créditos a muchas personas.</p>
+<p>Como se puede ver en <a href="#fig-matriz-conf">Figure&nbsp;2</a> el modelo ajustado es muy bueno para predecir verdaderos positivos, pero no para verdaderos negativos que los termina pasando como falsos positivos, lo que en contexto significaría otorgar créditos a muchas personas.</p>
 <div id="fig-roc-curve-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="fig-roc-curve-1-1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<pre><code>Text(0.5, 1.0, 'ROC curve')</code></pre>
-<p></p><figcaption class="figure-caption">(a) Curva de</figcaption><p></p>
-</figure>
-</div>
-<div class="cell-output cell-output-display">
-<div id="fig-roc-curve-1-2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="blog_files/figure-html/fig-roc-curve-1-output-2.png" data-ref-parent="fig-roc-curve-1" width="589" height="449" class="figure-img"></p>
-<p></p><figcaption class="figure-caption">(b)</figcaption><p></p>
-</figure>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;3: <strong>?(caption)</strong></figcaption><p></p>
+<p><img src="fig_m2.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Curva ROC</figcaption><p></p>
 </figure>
 </div>
 <p>En <a href="#fig-roc-curve-1">Figure&nbsp;3</a> podemos observar el rendimiento de la curva de roc donde se nota que la convergencia a uno es relativamente rápida. Por otra parte obtenemos un valor AUROC de 0.7751, es decir la probabilidad de que a una persona le aprueben un crédito y que en efecto cumple las caracteristicas para ser aprobado es del 77%.</p>
@@ -5532,9 +5756,9 @@ divide by zero encountered in log
 <section id="creación-de-scorecard" class="level3">
 <h3 class="anchored" data-anchor-id="creación-de-scorecard">Creación de scorecard</h3>
 <p>Para comenzar, aquellos coeficientes obtenidos anteriormente se deben escalar con respecto a la escala escogida, en este caso vamos a basarnos en los puntajes establecidos por FICO que se encuentran en el intervalo 300-850. Una vez escalados los redondeamos para obtener el score preliminar.</p>
-<p>Al calcular el máximo y el mínimo valor obtenido con el score preliminar: <a href="#tbl-scard-1">Table&nbsp;30</a> encontramos que el máximo es 851 que se pasa de el limite establecido inicialmente, para corregir esto sin afectar mucho el modelo inicial vamos a encontrar la máxima diferencia entre el score calculado y el preliminar entre los mayores valores de cada categoría, y a este le restamos uno.</p>
-<div class="cell" data-execution_count="35">
-<div class="cell-output cell-output-display" data-execution_count="35">
+<p>Al calcular el máximo y el mínimo valor obtenido con el score preliminar (<a href="#tbl-scard-1">Table&nbsp;30</a>) encontramos que el máximo es 851 que se pasa de el limite establecido inicialmente, para corregir esto sin afectar mucho el modelo inicial vamos a encontrar la máxima diferencia entre el score calculado y el preliminar entre los mayores valores de cada categoría, y a este le restamos uno. Este valor corresponde a inq_last_6mths:0 para el que el score calculado es 13.562276 y el score preliminar es 14, teniendo una diferencia de 0.43, este valor lo cambiaremos a 13 para que el máximo valor obtenido sea 850 en lugar de 851 sin afectar mucho a los datos preliminares, dicha corrección se puede ver en <a href="#tbl-scard-f">Table&nbsp;31</a>.</p>
+<div class="cell" data-execution_count="34">
+<div class="cell-output cell-output-display" data-execution_count="69">
 <div id="tbl-scard-1" class="anchored">
 
 <div>
@@ -5658,6 +5882,177 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
+<p>Esta tabla tiene un uso muy básico, el cual se puede describir con la siguiente fórmula, en la que multiplicamos el valor de cada característica obtenida del usuario por el respectivo score final que encontramos en la tabla.</p>
+<p>score = 598 + grade:A(54) + grade:B(32) + … + tot_cur_bal:400000-500000(13)</p>
+<p>En este caso el intercepto corresponde al valor inicial para cada usuario antes de realizar el cálculo, donde dependiendo de los valores que tenga asociado a cada característica se suma o se resta para obtener un valor final de scored.</p>
+<p>Para este problema podemos notar que el score máximo que se presenta es de 850, lo cual está en rango donde se tiene una buena vía crediticia, por otro lado tenemos que el mínimo es de 300, lo cual está en rango donde la vía crediticia es la peor.</p>
+<div class="cell" data-execution_count="35">
+<div class="cell-output cell-output-display" data-execution_count="70">
+<div id="tbl-scard-f" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;31:  Scorecard final </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>index</th>
+      <th>Feature name</th>
+      <th>Coefficients</th>
+      <th>Original feature name</th>
+      <th>Score - Calculation</th>
+      <th>Score - Preliminary</th>
+      <th>Difference</th>
+      <th>Score - Final</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>Intercept</td>
+      <td>3.372336</td>
+      <td>Intercept</td>
+      <td>624.322449</td>
+      <td>624.0</td>
+      <td>-0.322449</td>
+      <td>624.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>grade:A</td>
+      <td>0.764690</td>
+      <td>grade</td>
+      <td>53.940674</td>
+      <td>54.0</td>
+      <td>0.059326</td>
+      <td>54.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>grade:B</td>
+      <td>0.454917</td>
+      <td>grade</td>
+      <td>32.089486</td>
+      <td>32.0</td>
+      <td>-0.089486</td>
+      <td>32.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>grade:C</td>
+      <td>0.159338</td>
+      <td>grade</td>
+      <td>11.239568</td>
+      <td>11.0</td>
+      <td>-0.239568</td>
+      <td>11.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>grade:D</td>
+      <td>-0.029625</td>
+      <td>grade</td>
+      <td>-2.089724</td>
+      <td>-2.0</td>
+      <td>0.089724</td>
+      <td>-2.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>79</th>
+      <td>7</td>
+      <td>purpose:major_purchcarhome_impr</td>
+      <td>0.000000</td>
+      <td>purpose</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>80</th>
+      <td>8</td>
+      <td>verification_status:Not Verified</td>
+      <td>0.000000</td>
+      <td>verification_status</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>81</th>
+      <td>9</td>
+      <td>home_ownership:MORTGAGE</td>
+      <td>0.000000</td>
+      <td>home_ownership</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>82</th>
+      <td>10</td>
+      <td>grade:G</td>
+      <td>0.000000</td>
+      <td>grade</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>83</th>
+      <td>11</td>
+      <td>tot_cur_bal:0-100000</td>
+      <td>0.000000</td>
+      <td>tot_cur_bal</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>84 rows × 8 columns</p>
+</div>
+</div>
+</div>
+</div>
+<p>Teniendo en cuenta esto y calculando el scorecard para cada uno de los datos que se usaron para entrenar el modelo, obtenemos la distribución <a href="#fig-scard-distr">Figure&nbsp;4</a>.</p>
+<div id="fig-scard-distr" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="fig_2_scard_distr.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: Analisis distribución dado el Scorecard</figcaption><p></p>
+</figure>
+</div>
+<p>De <a href="#fig-scard-distr">Figure&nbsp;4</a> podemos notar que la media del scores es de 456, lo cual se encuentra en el rango más bajo de los puntajes crediticios, ya que está por debajo del quantil 25, además se observa que la distribución del score es bimodal ya que tiene dos picos, uno alrededor de 500 y el segundo alrededor de los 600.</p>
+</section>
+<section id="variables-más-riesgosas" class="level3">
+<h3 class="anchored" data-anchor-id="variables-más-riesgosas">Variables más riesgosas</h3>
+<p>En la gráfica <a href="#fig-riesgo">Figure&nbsp;5</a> podemos observar el valor que aporta cada característica al scorcad final, teniendo en cuenta que el valor de referencia es el intercepto. En la gráfica superior podemos ver que la característica que más resta puntaje al cliente en su score es out_pmcp&gt;1.286, seguida por los grados E y F, también se puede observar que la que menos le aporta negativamente es dti:15.196-19.195. En la gráfica inferior se tienen los diferentes pesos que aportan las características a los prestarios de manera positiva, por ejemplo el grado A es la que tiene un aporte de 54 aproximadamente, seguida por int_rate: &lt; 7.071 y grado B, además se ve que la que tiene un menor aporte de manera positiva es reovol_ultiil:0.4-0.5.</p>
+<div id="fig-riesgo" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="fig_3_riesgo.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Analisis de variables más riesgoas</figcaption><p></p>
+</figure>
+</div>
 </section>
 </section>
 <section id="referencias" class="level2">
@@ -5669,11 +6064,20 @@ divide by zero encountered in log
 <div id="ref-IntroML" class="csl-entry" role="doc-biblioentry">
 Andreas C. Müller, Sarah Guido. 2016. <em>Introduction to Machine Learning with Python</em>. O’Reilly Media, Inc.
 </div>
+<div id="ref-Data1" class="csl-entry" role="doc-biblioentry">
+Asad Mumtaz. 2020. <span>“How to Develop a Credit Risk Model and Scorecard.”</span> 2020. <a href="https://towardsdatascience.com/how-to-develop-a-credit-risk-model-and-scorecard-91335fc01f03">https://towardsdatascience.com/how-to-develop-a-credit-risk-model-and-scorecard-91335fc01f03</a>.
+</div>
+<div id="ref-Creditriskanalytics" class="csl-entry" role="doc-biblioentry">
+Bart Baesens, Harald Scheule, Daniel Roesch. 2016. <em>Credit Risk Analytics: Measurement Techniques, Applications, and Examples in SAS</em>. John Wiley &amp; Sons.
+</div>
 <div id="ref-HandsOn" class="csl-entry" role="doc-biblioentry">
 Géron, Aurélien. 2019. <em>Hands-on Machine Learning with Scikit-Learn, Keras, and TensorFlow, 2nd Edition</em>. O’Reilly Media, Inc.
 </div>
-<div id="ref-DataWebsite" class="csl-entry" role="doc-biblioentry">
-U.S. Department of Education. 2016. <span>“Cluster Analysis Challenge.”</span> 2016. <a href="https://data.world/exercises/cluster-analysis-exercise-2">https://data.world/exercises/cluster-analysis-exercise-2</a>.
+<div id="ref-CreditScoring" class="csl-entry" role="doc-biblioentry">
+Lyn Thomas, David Edelman, Jonathan Crook. 2002. <em>Credit Scoring and Its Applications.</em> David Marshall.
+</div>
+<div id="ref-Creditriskscorecards" class="csl-entry" role="doc-biblioentry">
+Siddiqi, Naeem. 2012. <em>Credit Risk Scorecards: Developing and Implementing Intelligent Credit Scoring</em>. John Wiley &amp; Sons.
 </div>
 </div></section></div></main>
 <!-- /main column -->

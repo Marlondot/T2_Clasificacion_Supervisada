@@ -1,0 +1,4 @@
+- source: blog.qmd
+  quarto-pub:
+    - id: 03f3f836-3274-4bca-9851-a29014027d9d
+      url: 'https://quartopub.com/sites/marloneau/creacion-scorecard-para-calculo-de-puntaje-crediticio'
