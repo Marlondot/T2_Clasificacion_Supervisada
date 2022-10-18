@@ -87,6 +87,7 @@ div.csl-indent {
   <li><a href="#ajuste-del-modelo-y-realización-de-scorecard" id="toc-ajuste-del-modelo-y-realización-de-scorecard" class="nav-link" data-scroll-target="#ajuste-del-modelo-y-realización-de-scorecard">Ajuste del modelo y realización de Scorecard</a>
   <ul class="collapse">
   <li><a href="#ajuste-del-modelo" id="toc-ajuste-del-modelo" class="nav-link" data-scroll-target="#ajuste-del-modelo">Ajuste del modelo</a></li>
+  <li><a href="#creación-de-scorecard" id="toc-creación-de-scorecard" class="nav-link" data-scroll-target="#creación-de-scorecard">Creación de scorecard</a></li>
   </ul></li>
   <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias">Referencias</a></li>
   </ul>
@@ -303,7 +304,7 @@ div.csl-indent {
 <p></p><figcaption class="figure-caption">Figure&nbsp;1: Matriz de correlacion</figcaption><p></p>
 </figure>
 </div>
-<p>Así y de acuerdo <a href="#fig-matriz-corr-1">Figure&nbsp;1</a> se eliminarán aquellas columnas que posean un correlación de al menos 60% es decir las variables: ‘total_rec_int’, ‘total_pymnt_inv’, ‘total_pymnt’, ‘installment’, ‘funded_amnt’, ‘funded_amnt_inv’, ‘out_prncp_inv’, ‘total_acc’ y ‘total_rev_hi_lim’.</p>
+<p>Así y de acuerdo <a href="#fig-matriz-corr-1">Figure&nbsp;2</a> se eliminarán aquellas columnas que posean un correlación de al menos 60% es decir las variables: ‘total_rec_int’, ‘total_pymnt_inv’, ‘total_pymnt’, ‘installment’, ‘funded_amnt’, ‘funded_amnt_inv’, ‘out_prncp_inv’, ‘total_acc’ y ‘total_rev_hi_lim’.</p>
 <p>Al final resultaríamos con las variables encontradas en <a href="#tbl-variables-resultantes">Table&nbsp;3</a>, donde aquellas de tipo object son las que reconoceremos como categóricas para posterior análisis y transformación:</p>
 <div class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display" data-execution_count="5">
@@ -5486,7 +5487,177 @@ divide by zero encountered in log
 </div>
 </div>
 </div>
-<p>Ya con el modelo entrenado y con coeficientes para cada una de las variables como se puede ver en <a href="#tbl-model-summary">Table&nbsp;29</a>.</p>
+<p>Ya con el modelo entrenado y con coeficientes para cada una de las variables como se puede ver en <a href="#tbl-model-summary">Table&nbsp;29</a> se procederán a analizar resultados del ajuste:</p>
+<div id="fig-matriz-corr-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<div id="fig-matriz-corr-1-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<pre><code>&lt;AxesSubplot:&gt;</code></pre>
+<p></p><figcaption class="figure-caption">(a) Matriz de confusión</figcaption><p></p>
+</figure>
+</div>
+<div class="cell-output cell-output-display">
+<div id="fig-matriz-corr-1-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="blog_files/figure-html/fig-matriz-corr-1-output-2.png" data-ref-parent="fig-matriz-corr-1" width="562" height="411" class="figure-img"></p>
+<p></p><figcaption class="figure-caption">(b)</figcaption><p></p>
+</figure>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: <strong>?(caption)</strong></figcaption><p></p>
+</figure>
+</div>
+<p>Como se puede ver en <a href="#fig-matriz-corr-1">Figure&nbsp;2</a> el modelo ajustado es muy bueno para predecir verdaderos positivos, pero no para verdaderos negativos que los termina pasando como falsos positivos, lo que en contexto significaría otorgar créditos a muchas personas.</p>
+<div id="fig-roc-curve-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<div id="fig-roc-curve-1-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<pre><code>Text(0.5, 1.0, 'ROC curve')</code></pre>
+<p></p><figcaption class="figure-caption">(a) Curva de</figcaption><p></p>
+</figure>
+</div>
+<div class="cell-output cell-output-display">
+<div id="fig-roc-curve-1-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="blog_files/figure-html/fig-roc-curve-1-output-2.png" data-ref-parent="fig-roc-curve-1" width="589" height="449" class="figure-img"></p>
+<p></p><figcaption class="figure-caption">(b)</figcaption><p></p>
+</figure>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: <strong>?(caption)</strong></figcaption><p></p>
+</figure>
+</div>
+<p>En <a href="#fig-roc-curve-1">Figure&nbsp;3</a> podemos observar el rendimiento de la curva de roc donde se nota que la convergencia a uno es relativamente rápida. Por otra parte obtenemos un valor AUROC de 0.7751, es decir la probabilidad de que a una persona le aprueben un crédito y que en efecto cumple las caracteristicas para ser aprobado es del 77%.</p>
+</section>
+<section id="creación-de-scorecard" class="level3">
+<h3 class="anchored" data-anchor-id="creación-de-scorecard">Creación de scorecard</h3>
+<p>Para comenzar, aquellos coeficientes obtenidos anteriormente se deben escalar con respecto a la escala escogida, en este caso vamos a basarnos en los puntajes establecidos por FICO que se encuentran en el intervalo 300-850. Una vez escalados los redondeamos para obtener el score preliminar.</p>
+<p>Al calcular el máximo y el mínimo valor obtenido con el score preliminar: <a href="#tbl-scard-1">Table&nbsp;30</a> encontramos que el máximo es 851 que se pasa de el limite establecido inicialmente, para corregir esto sin afectar mucho el modelo inicial vamos a encontrar la máxima diferencia entre el score calculado y el preliminar entre los mayores valores de cada categoría, y a este le restamos uno.</p>
+<div class="cell" data-execution_count="35">
+<div class="cell-output cell-output-display" data-execution_count="35">
+<div id="tbl-scard-1" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;30:  Scorecard preliminar </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>index</th>
+      <th>Feature name</th>
+      <th>Coefficients</th>
+      <th>Original feature name</th>
+      <th>Score - Calculation</th>
+      <th>Score - Preliminary</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>Intercept</td>
+      <td>3.372336</td>
+      <td>Intercept</td>
+      <td>624.322449</td>
+      <td>624.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>grade:A</td>
+      <td>0.764690</td>
+      <td>grade</td>
+      <td>53.940674</td>
+      <td>54.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>grade:B</td>
+      <td>0.454917</td>
+      <td>grade</td>
+      <td>32.089486</td>
+      <td>32.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>grade:C</td>
+      <td>0.159338</td>
+      <td>grade</td>
+      <td>11.239568</td>
+      <td>11.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>grade:D</td>
+      <td>-0.029625</td>
+      <td>grade</td>
+      <td>-2.089724</td>
+      <td>-2.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>79</th>
+      <td>7</td>
+      <td>purpose:major_purchcarhome_impr</td>
+      <td>0.000000</td>
+      <td>purpose</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>80</th>
+      <td>8</td>
+      <td>verification_status:Not Verified</td>
+      <td>0.000000</td>
+      <td>verification_status</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>81</th>
+      <td>9</td>
+      <td>home_ownership:MORTGAGE</td>
+      <td>0.000000</td>
+      <td>home_ownership</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>82</th>
+      <td>10</td>
+      <td>grade:G</td>
+      <td>0.000000</td>
+      <td>grade</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>83</th>
+      <td>11</td>
+      <td>tot_cur_bal:0-100000</td>
+      <td>0.000000</td>
+      <td>tot_cur_bal</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>84 rows × 6 columns</p>
+</div>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="referencias" class="level2">

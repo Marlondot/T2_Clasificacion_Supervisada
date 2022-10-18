@@ -26,7 +26,7 @@ appendix-style: default
 
 ## Introducción
 
-El siguiente trabajo tiene como objetivo la realización de una scorecard que ubique a las personas en un punto de [TODO]
+El siguiente trabajo tiene como objetivo la realización de una scorecard que permita a las personas calcular su puntaje crediticio de manera sencilla.
 
 Para realizar utilizamos la base de datos proporcionada por @DataWebsite.
 
@@ -879,8 +879,70 @@ En @fig-roc-curve-1 podemos observar el rendimiento de la curva de roc donde se 
 
 Para comenzar, aquellos coeficientes obtenidos anteriormente se deben escalar con respecto a la escala escogida, en este caso vamos a basarnos en los puntajes establecidos por FICO que se encuentran en el intervalo 300-850. Una vez escalados los redondeamos para obtener el score preliminar.
 
-Al calcular el máximo y el mínimo valor obtenido con el score preliminar encontramos que el máximo es 851 que se pasa de el limite establecido inicialmente, para corregir esto sin afectar mucho el modelo inicial vamos a encontrar el la máxima diferencia entre el score calculado y el preliminar entre los mayores valores de cada categoría, y a este le restamos uno.
+Al calcular el máximo y el mínimo valor obtenido con el score preliminar (@tbl-scard-1) encontramos que el máximo es 851 que se pasa de el limite establecido inicialmente, para corregir esto sin afectar mucho el modelo inicial vamos a encontrar la máxima diferencia entre el score calculado y el preliminar entre los mayores valores de cada categoría, y a este le restamos uno. Este valor corresponde a inq_last_6mths:0 para el que el score calculado es 13.562276 y el score preliminar es 14, teniendo una diferencia de 0.43, este valor lo cambiaremos a 13 para que el máximo valor obtenido sea 850 en lugar de 851 sin afectar mucho a los datos preliminares, dicha corrección se puede ver en @tbl-scard-f.
 
+```{python}
+#| tbl-cap: Scorecard preliminar
+#| label: tbl-scard-1
+
+
+# We create a new dataframe with one column. Its values are the values from the 'reference_categories' list. We name it 'Feature name'.
+df_ref_categories = pd.DataFrame(ref_categories, columns = ['Feature name'])
+# We create a second column, called 'Coefficients', which contains only 0 values.
+df_ref_categories['Coefficients'] = 0
+
+# Concatenates two dataframes.
+df_scorecard = pd.concat([summary_table, df_ref_categories])
+# We reset the index of a dataframe.
+df_scorecard.reset_index(inplace = True)
+
+# create a new column, called 'Original feature name', which contains the value of the 'Feature name' column, up to the column symbol.
+df_scorecard['Original feature name'] = df_scorecard['Feature name'].str.split(':').str[0]
+
+# Define the min and max threshholds for our scorecard
+min_score = 300
+max_score = 850
+
+
+# calculate the sum of the minimum coefficients of each category within the original feature name
+min_sum_coef = df_scorecard.groupby('Original feature name')['Coefficients'].min().sum()
+# calculate the sum of the maximum coefficients of each category within the original feature name
+max_sum_coef = df_scorecard.groupby('Original feature name')['Coefficients'].max().sum()
+# create a new columns that has the imputed calculated Score based on the multiplication of the coefficient by the ratio of the differences between
+# maximum & minimum score and maximum & minimum sum of cefficients.
+df_scorecard['Score - Calculation'] = df_scorecard['Coefficients'] * (max_score - min_score) / (max_sum_coef - min_sum_coef)
+# update the calculated score of the Intercept (i.e. the default score for each loan)
+df_scorecard.loc[0, 'Score - Calculation'] = ((df_scorecard.loc[0,'Coefficients'] - min_sum_coef) / (max_sum_coef - min_sum_coef)) * (max_score - min_score) + min_score
+# round the values of the 'Score - Calculation' column and store them in a new column
+df_scorecard['Score - Preliminary'] = df_scorecard['Score - Calculation'].round()
+df_scorecard
+```
+
+Esta tabla tiene un uso muy básico, el cual se puede describir con la siguiente fórmula, en la que multiplicamos el valor de cada característica obtenida del usuario por el respectivo score final que encontramos en la tabla.
+
+score = 598 + grade:A(56) + grade:B(34) + … + tot_cur_bal:400000-500000(13)
+
+En este caso el intercepto corresponde al valor inicial para cada usuario antes de realizar el cálculo, donde dependiendo de los valores que tenga asociado a cada característica se suma o se resta para obtener un valor final de scored.
+
+Para este problema podemos notar que el score máximo que se presenta es de 850, lo cual está en rango donde se tiene una buena vía crediticia, por otro lado tenemos que el mínimo es de 300, lo cual está en rango donde la vía crediticia es la peor.
+
+
+```{python}
+#| tbl-cap: Scorecard final
+#| label: tbl-scard-f
+
+df_scorecard['Difference'] = df_scorecard['Score - Preliminary'] - df_scorecard['Score - Calculation']
+
+df_scorecard['Score - Final'] = df_scorecard['Score - Preliminary']
+df_scorecard.loc[45, 'Score - Final'] = 13
+df_scorecard
+```
+
+Teniendo en cuenta esto y calculando el scorecard para cada uno de los datos que se usaron para entrenar el modelo, obtenemos la distribución @fig-scard-distr.
+
+![Analisis distribución dado el Scorecard](fig_2_scard_distr.png){#fig-scard-distr}
+
+De @fig-scard-distr podemos notar que la media del scores es de 456, lo cual se encuentra en el rango más bajo de los puntajes crediticios, ya que está por debajo del quantil 25, además se observa que la distribución del score es bimodal ya que tiene dos picos, uno alrededor de 500 y el segundo alrededor de los 600.
 
 
 
