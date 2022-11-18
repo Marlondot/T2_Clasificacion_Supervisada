@@ -1,5 +1,6 @@
 ---
 title: "Creacion scorecard para calculo de puntaje crediticio a partir de un modelo predictivo"
+lang: es    
 bibliography: references.bib
 author:
   - name: Daniel Daza Macias
@@ -28,7 +29,21 @@ appendix-style: default
 
 El siguiente trabajo tiene como objetivo la realización de una scorecard que permita a las personas calcular su puntaje crediticio de manera sencilla.
 
-Para realizar el siguiente reporte utilizamos la base de datos proporcionada por el docente del curso de Técnicas en Aprendizaje Estadístico de la Universidad Nacional de Colombia.
+Para realizar el siguiente reporte utilizamos la base de datos facilitada por @DataWebsite que además otorga un diccionario con las definiciones específicas de cada una de las variables
+
+### Contexto del problema
+
+Una de las principales actividades de los bancos a lo largo de la historia es el prestamo de dinero o la aplicación de créditos a personas. Dicha actividad conlleva un gran reto para estas: conocer criterios desde los cuales puedan concluir que el dinero prestado más los intereses sí se les sea dado en el plazo estipulado.
+
+¿Por qué es importante saber si el prestatario devolverá el dinero? Minimizar el impacto y la tasa de cartera vencida. Entiendase por cartera vencida por créditos no pagados a tiempo. Para mediados de junio la cartera de bancos extranjeros fue del 3.2% y en Colombia el indicador de cartera vencida fue del 3.7% [@PagNews1]. No tener en cuenta este factor puede provocar que toda la economía de un país colapse. Como ocurrió en la recesión del 2008 donde los bancos hicieron prestamos a personas con altas probabilidadesde incumplimiento [@PagNews2].
+
+### Resumen resultados
+
+Al final del reporte se podrá notar que una de las variables más importantes para la puntuación en la score card generada es 'grade', donde un alto grado (A)puede sumar una gran puntuación, mientras que un grado bajo (F) puede por el contrario ser de los atributos que más efectos negativos tengan sobre la puntuación general. Por otra parte se puede notar que a menor ingresos anuales declarados menor es la puntuación otorgada.
+
+### Metodos empleados y objetivos de desarrollo
+
+Teniendo en cuenta el contexto anterior en el siguiente trabajo se desarollará una scorecard de riesgo crediticio, basados en técnicas de aprendizaje estadístico, para así obtener la probabilidad de que un prestatario pague el dinero prestado. Basándonos en el proceso seguido por @Data1, y apoyados en diferentes bibliografías en materia de Machine Learning y Credit Scoring, se usará Google colab y Python junto con la librería sklearn, además del framework streamlit para la creación de un aplicativo web que simplifique la consulta de Credit Score a partir de diferentes variables.
 
 ## Importe y análisis de datos
 
@@ -207,6 +222,16 @@ Para terminar se eliminarán también las columnas 'application_type', pues sól
 
 
 ## Selección de variables a partir de WoE y Valor de Información (IV)
+
+El WOE y IV son criterios de selección que se usan en el campo de evaluación de riesgos y scorecards. WOE, o Weight of Evidence, se usa para medir la fuerza predictiva de un atributo o grupo de atributos, siendo esta una medida de la diferencia entre la proporción de "buenos" y "malos" en cada atributo, por ejemplo la probabilidad de que una persona con dicho atributo sea buena o mala. Así, este se calcula con el logaritmo natural de la división de la proporción de observaciones buscadas ("buenas") sobre las no buscadas ("malas") dada la cantidad de observaciones de cada una de las labels del atributo [@Creditriskscorecards]. Por otra parte el IV, o Information Value, se mide como la sumatoria total de la proporción de observaciones "buenas" de la label i menos la proporción de observaciones "malas" de la label i por el valor del WOE calculado de la label i, con i perteneciente al conjunto de todas las labels posibles del atributo [@Creditriskscorecards], su función es determinar cuales agrupamientos realizados en el WOE tienen mayor fuerza predictiva, así dado el valor se tienen las posibles decisiones:
+
+*   Valores IV menores a 0.02: No mantener atributos pues no aportan a la predicción
+*   Valores IV desde 0.02 a 0.1: Mantener atributos pues aportan a la predicción de manera débil
+*   Valores IV desde 0.1 a 0.3: Mantener atributos pues aportan a la predicción de manera media
+*   Valores IV desde 0.3 a 0.5: Mantener atributos pues aportan a la predicción de manera fuerte
+*   Valores IV mayores a 0.5: Revisar atributos y mantenerlos con cautela pues están sobre prediciendo [@Creditriskscorecards]
+
+Antes de comenzar con la selección haremos imputación a los datos:
 
 Como se puede ver en @tbl-cantidad-nulos-final donde se encuentran las variables resultantes y la cantidad de nulos de cada uno debemos hacer una imputación, dicha imputación consistirá en reemplazar valores nulos por la moda, en el caso de las variables categóricas, y por la mediana en el caso de las continuas.
 
@@ -621,18 +646,18 @@ woe_ordered_continuous(ensayitos_temp, 'tot_cur_bal_factor', y_train_prepr[ensay
 
 Así terminamos con un total de 12 variables categóricas y numéricas:
 
-*   'purpose'
-*   'verification_status'
-*   'home_ownership'
-*   'tot_cur_bal'
-*   'dti'
-*   'inq_last_6mths'
-*   'out_prncp'
-*   'int_rate'
-*   'term'
-*   'annual_inc'
-*   'revol_util'
-*   'grade'
+*   'purpose': El propósito por el que se pide el crédito
+*   'verification_status': Indica si los ingresos fueron verificados por el Lending Club
+*   'home_ownership': El estado actual de propiedad de la vivienda del prestatario
+*   'tot_cur_bal': El balance actual total de todas las cuentas
+*   'dti': Una relación calculada usando los pagos totales de deuda mensuales del prestatario sobre el total de obligaciones de deuda, sin incluir la hipoteca y el préstamo de LC solicitado, dividido por el total de ingresos mensuales autodeclarados del prestatario
+*   'inq_last_6mths': Número de consultas en los últimos 6 meses (excluyendo consultas de hipotecas)
+*   'out_prncp': Capital restante pendiente por el monto total financiado
+*   'int_rate': Tasa de interés en el préstamo
+*   'term': Número de pagos al préstamo. Sólo toma dos valores: 36 meses o 60 meses
+*   'annual_inc': Los ingresos anuales autodeclarados del prestatario
+*   'revol_util': Tasa de utilización del préstamo
+*   'grade': Grado del préstamo asginado en la carta de crédito
 
 ## Ajuste del modelo y realización de Scorecard
 
@@ -871,12 +896,20 @@ y_test_proba.index = X_test.index
 
 ```
 
-Como se puede ver en @fig-matriz-conf el modelo ajustado es muy bueno para predecir verdaderos positivos, pero no para verdaderos negativos que los termina pasando como falsos positivos, lo que en contexto significaría otorgar créditos a muchas personas.
+Como se puede ver en la matriz de confusión, @fig-matriz-conf:
+
+- Arriba a la izquierda el porcentaje de los verdaderos negativos clasificados por el modelo.
+- Arriba a la derecha el porcentaje de los falsos positivos que clasificó el modelo.
+- Abajo a la izquierda el porcentaje de los falsos negativos clasificados por el modelo.
+- Abajo a la derecha el porcentaje de verdaderos positivos que clasificó el modelo.
+
+Entiéndase como positivo (1) una persona que cumplió con sus obligaciones financieras  y negativo (0) una persona que incumplió éstas.
+Con esto en mente, se puede ver que el modelo ajustado es muy bueno para predecir verdaderos positivos, pero no para verdaderos negativos que los termina pasando como falsos positivos, lo que en contexto significaría otorgar créditos a muchas personas.
 
 ![Curva ROC](fig_m2.png){#fig-roc-curve-1}
 
 
-En @fig-roc-curve-1 podemos observar el rendimiento de la curva de roc donde se nota que la convergencia a uno es relativamente rápida.  Por otra parte obtenemos un valor AUROC de 0.7751, es decir la probabilidad de que a una persona le aprueben un crédito y que en efecto cumple las caracteristicas para ser aprobado es del 77%.
+En @fig-roc-curve-1 se puede observar la curva ROC donde se tiene un 77% de efectividad de clasificación, es decir, de que el modelo prediga que a una persona le acepten o le otorguen el crédito cuando en realidad cumple las condiciones y que se lo rechacen cuando no las cumple.
 
 ### Creación de scorecard
 
@@ -947,11 +980,13 @@ Teniendo en cuenta esto y calculando el scorecard para cada uno de los datos que
 
 De @fig-scard-distr podemos notar que la media del scores es de 456, lo cual se encuentra en el rango más bajo de los puntajes crediticios, ya que está por debajo del quantil 25, además se observa que la distribución del score es bimodal ya que tiene dos picos, uno alrededor de 500 y el segundo alrededor de los 600.
 
-### Variables más riesgosas
+### Variables que mejor predicen el riesgo
 
-En la gráfica @fig-riesgo podemos observar el valor que aporta cada característica al scorcad final, teniendo en cuenta que el valor de referencia es el intercepto. En la gráfica superior podemos ver que la característica que más resta puntaje al cliente en su score es out_pmcp>1.286, seguida por los grados E y F, también se puede observar que la que menos le aporta negativamente es dti:15.196-19.195. En la gráfica inferior se tienen los diferentes pesos que aportan las características a los prestarios de manera positiva, por ejemplo el grado A es la que tiene un aporte de 54 aproximadamente, seguida por int_rate: < 7.071 y grado B, además se ve que la que tiene un menor aporte de manera positiva es reovol_ultiil:0.4-0.5.
+En la gráfica @fig-riesgo podemos observar el valor que aporta cada característica al scorecard final, teniendo en cuenta que el valor de referencia es el intercepto. En la gráfica superior podemos ver que la característica que más resta puntaje al cliente en su score es out_pmcp>1.286, seguida por los grados E y F, también se puede observar que la que menos le aporta negativamente es dti:15.196-19.195. En la gráfica inferior se tienen los diferentes pesos que aportan las características a los prestarios de manera positiva, por ejemplo el grado A es la que tiene un aporte de 54 aproximadamente, seguida por int_rate: < 7.071 y grado B, además se ve que la que tiene un menor aporte de manera positiva es revol_util:0.4-0.5. Por otra parte se puede notar que a menor ingresos anuales declarados menor es la puntuación otorgada, excepto para un caso en específico donde annual_inc:120.379-150.000 otorga más puntuación que annual_inc>150.000.
 
-![Analisis de variables más riesgoas](fig_3_riesgo.png){#fig-riesgo}
+![Analisis de variables más riesgosas](fig_3_riesgo.png){#fig-riesgo}
+
+
 
 
 ---

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.1.179">
@@ -71,10 +71,15 @@ div.csl-indent {
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
   <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+    <h2 id="toc-title">Indice de contenidos</h2>
    
   <ul>
-  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a></li>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a>
+  <ul class="collapse">
+  <li><a href="#contexto-del-problema" id="toc-contexto-del-problema" class="nav-link" data-scroll-target="#contexto-del-problema">Contexto del problema</a></li>
+  <li><a href="#resumen-resultados" id="toc-resumen-resultados" class="nav-link" data-scroll-target="#resumen-resultados">Resumen resultados</a></li>
+  <li><a href="#metodos-empleados-y-objetivos-de-desarrollo" id="toc-metodos-empleados-y-objetivos-de-desarrollo" class="nav-link" data-scroll-target="#metodos-empleados-y-objetivos-de-desarrollo">Metodos empleados y objetivos de desarrollo</a></li>
+  </ul></li>
   <li><a href="#importe-y-análisis-de-datos" id="toc-importe-y-análisis-de-datos" class="nav-link" data-scroll-target="#importe-y-análisis-de-datos">Importe y análisis de datos</a>
   <ul class="collapse">
   <li><a href="#selección-y-transformación-de-variables" id="toc-selección-y-transformación-de-variables" class="nav-link" data-scroll-target="#selección-y-transformación-de-variables">Selección y transformación de variables</a></li>
@@ -88,7 +93,7 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#ajuste-del-modelo" id="toc-ajuste-del-modelo" class="nav-link" data-scroll-target="#ajuste-del-modelo">Ajuste del modelo</a></li>
   <li><a href="#creación-de-scorecard" id="toc-creación-de-scorecard" class="nav-link" data-scroll-target="#creación-de-scorecard">Creación de scorecard</a></li>
-  <li><a href="#variables-más-riesgosas" id="toc-variables-más-riesgosas" class="nav-link" data-scroll-target="#variables-más-riesgosas">Variables más riesgosas</a></li>
+  <li><a href="#variables-que-mejor-predicen-el-riesgo" id="toc-variables-que-mejor-predicen-el-riesgo" class="nav-link" data-scroll-target="#variables-que-mejor-predicen-el-riesgo">Variables que mejor predicen el riesgo</a></li>
   </ul></li>
   <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias">Referencias</a></li>
   </ul>
@@ -106,7 +111,7 @@ div.csl-indent {
 <div class="quarto-title-meta">
 
     <div>
-    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-heading">Autores</div>
     <div class="quarto-title-meta-contents">
              <p>Daniel Daza Macias </p>
              <p>Daniel Santiago Cadavid Montoya </p>
@@ -125,7 +130,20 @@ div.csl-indent {
 <section id="introducción" class="level2">
 <h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
 <p>El siguiente trabajo tiene como objetivo la realización de una scorecard que permita a las personas calcular su puntaje crediticio de manera sencilla.</p>
-<p>Para realizar el siguiente reporte utilizamos la base de datos proporcionada por el docente del curso de Técnicas en Aprendizaje Estadístico de la Universidad Nacional de Colombia.</p>
+<p>Para realizar el siguiente reporte utilizamos la base de datos facilitada por <span class="citation" data-cites="DataWebsite">lendingclub (<a href="#ref-DataWebsite" role="doc-biblioref">2017</a>)</span> que además otorga un diccionario con las definiciones específicas de cada una de las variables</p>
+<section id="contexto-del-problema" class="level3">
+<h3 class="anchored" data-anchor-id="contexto-del-problema">Contexto del problema</h3>
+<p>Una de las principales actividades de los bancos a lo largo de la historia es el prestamo de dinero o la aplicación de créditos a personas. Dicha actividad conlleva un gran reto para estas: conocer criterios desde los cuales puedan concluir que el dinero prestado más los intereses sí se les sea dado en el plazo estipulado.</p>
+<p>¿Por qué es importante saber si el prestatario devolverá el dinero? Minimizar el impacto y la tasa de cartera vencida. Entiendase por cartera vencida por créditos no pagados a tiempo. Para mediados de junio la cartera de bancos extranjeros fue del 3.2% y en Colombia el indicador de cartera vencida fue del 3.7% <span class="citation" data-cites="PagNews1">(<a href="#ref-PagNews1" role="doc-biblioref">Nathalia Morales Arévalo 2022</a>)</span>. No tener en cuenta este factor puede provocar que toda la economía de un país colapse. Como ocurrió en la recesión del 2008 donde los bancos hicieron prestamos a personas con altas probabilidadesde incumplimiento <span class="citation" data-cites="PagNews2">(<a href="#ref-PagNews2" role="doc-biblioref">Deepanshu Bhalla 2019</a>)</span>.</p>
+</section>
+<section id="resumen-resultados" class="level3">
+<h3 class="anchored" data-anchor-id="resumen-resultados">Resumen resultados</h3>
+<p>Al final del reporte se podrá notar que una de las variables más importantes para la puntuación en la score card generada es ‘grade’, donde un alto grado (A)puede sumar una gran puntuación, mientras que un grado bajo (F) puede por el contrario ser de los atributos que más efectos negativos tengan sobre la puntuación general. Por otra parte se puede notar que a menor ingresos anuales declarados menor es la puntuación otorgada.</p>
+</section>
+<section id="metodos-empleados-y-objetivos-de-desarrollo" class="level3">
+<h3 class="anchored" data-anchor-id="metodos-empleados-y-objetivos-de-desarrollo">Metodos empleados y objetivos de desarrollo</h3>
+<p>Teniendo en cuenta el contexto anterior en el siguiente trabajo se desarollará una scorecard de riesgo crediticio, basados en técnicas de aprendizaje estadístico, para así obtener la probabilidad de que un prestatario pague el dinero prestado. Basándonos en el proceso seguido por <span class="citation" data-cites="Data1">Asad Mumtaz (<a href="#ref-Data1" role="doc-biblioref">2020</a>)</span>, y apoyados en diferentes bibliografías en materia de Machine Learning y Credit Scoring, se usará Google colab y Python junto con la librería sklearn, además del framework streamlit para la creación de un aplicativo web que simplifique la consulta de Credit Score a partir de diferentes variables.</p>
+</section>
 </section>
 <section id="importe-y-análisis-de-datos" class="level2">
 <h2 class="anchored" data-anchor-id="importe-y-análisis-de-datos">Importe y análisis de datos</h2>
@@ -136,7 +154,7 @@ div.csl-indent {
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;1:  Datos iniciales </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;1:  Datos iniciales </caption>
   <thead>
     <tr>
       <th></th>
@@ -195,16 +213,16 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Como se puede ver en <a href="#tbl-import-presentacion-inicial">Table&nbsp;1</a> la base de datos contiene 74 columnas además de 466285 observaciones.</p>
+<p>Como se puede ver en <a href="#tbl-import-presentacion-inicial">Tabla&nbsp;1</a> la base de datos contiene 74 columnas además de 466285 observaciones.</p>
 <p>Por otra parte nuestra variable de interés será loan_status o estado del prestamo de cada observación que tiene entre posibles valores: ‘Fully Paid’, ‘Charged Off’, ‘Current’, ‘Default’, ‘Late (31-120 days)’,‘In Grace Period’, ‘Late (16-30 days)’, ‘Does not meet the credit policy. Status:Fully Paid’ y ‘Does not meet the credit policy. Status:Charged Off’. Así y como nuestro objetivo parte de la clasificación en dos grupos partiremos de esta variable para otorgar a cada observación el valor de: incumplió con obligaciones financieras (0 en la nueva columna creada ‘Obligaciones_financieras’) o cumplió con las obligaciones financieras(1 en la nueva columna creada ‘Obligaciones_financieras’), el primero siendo equivalente a los valores ‘Charged Off’, ‘Default’, ‘Late (31-120 days)’ y ‘Does not meet the credit policy. Status:Charged Off’ en ‘loan_status’.</p>
 <section id="selección-y-transformación-de-variables" class="level3">
 <h3 class="anchored" data-anchor-id="selección-y-transformación-de-variables">Selección y transformación de variables</h3>
-<p>Para comenzar a seleccionar variables y como nuestro interés de acuerdo al objetivo es tener la mayor cantidad de datos sin imputar obviaremos para el ajuste del modelo aquellas cuya cantidad de datos nulos sea mayor al 70%, dichas variables se pueden ver en <a href="#tbl-variables-nulos">Table&nbsp;2</a></p>
+<p>Para comenzar a seleccionar variables y como nuestro interés de acuerdo al objetivo es tener la mayor cantidad de datos sin imputar obviaremos para el ajuste del modelo aquellas cuya cantidad de datos nulos sea mayor al 70%, dichas variables se pueden ver en <a href="#tbl-variables-nulos">Tabla&nbsp;2</a></p>
 <div class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display" data-execution_count="38">
 <div id="tbl-variables-nulos" class="anchored">
 <table class="table table-sm table-striped">
-<caption>Table&nbsp;2: Variables con porcentaje de nulo mayor al 30%</caption>
+<caption>Tabla&nbsp;2: Variables con porcentaje de nulo mayor al 30%</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Variable</th>
@@ -302,16 +320,16 @@ div.csl-indent {
 <div id="fig-matriz-corr-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="fig_1_corr_pearson.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;1: Matriz de correlacion</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;1: Matriz de correlacion</figcaption><p></p>
 </figure>
 </div>
-<p>Así y de acuerdo <a href="#fig-matriz-corr-1">Figure&nbsp;1</a> se eliminarán aquellas columnas que posean un correlación de al menos 60% es decir las variables: ‘total_rec_int’, ‘total_pymnt_inv’, ‘total_pymnt’, ‘installment’, ‘funded_amnt’, ‘funded_amnt_inv’, ‘out_prncp_inv’, ‘total_acc’ y ‘total_rev_hi_lim’.</p>
-<p>Al final resultaríamos con las variables encontradas en <a href="#tbl-variables-resultantes">Table&nbsp;3</a>, donde aquellas de tipo object son las que reconoceremos como categóricas para posterior análisis y transformación:</p>
+<p>Así y de acuerdo <a href="#fig-matriz-corr-1">Figura&nbsp;1</a> se eliminarán aquellas columnas que posean un correlación de al menos 60% es decir las variables: ‘total_rec_int’, ‘total_pymnt_inv’, ‘total_pymnt’, ‘installment’, ‘funded_amnt’, ‘funded_amnt_inv’, ‘out_prncp_inv’, ‘total_acc’ y ‘total_rev_hi_lim’.</p>
+<p>Al final resultaríamos con las variables encontradas en <a href="#tbl-variables-resultantes">Tabla&nbsp;3</a>, donde aquellas de tipo object son las que reconoceremos como categóricas para posterior análisis y transformación:</p>
 <div class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display" data-execution_count="40">
 <div id="tbl-variables-resultantes" class="anchored">
 <table class="table table-sm table-striped">
-<caption>Table&nbsp;3: Variables resultantes y tipos</caption>
+<caption>Tabla&nbsp;3: Variables resultantes y tipos</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Variable</th>
@@ -458,12 +476,12 @@ div.csl-indent {
 </div>
 <section id="transformación-de-variables-categóricas" class="level4">
 <h4 class="anchored" data-anchor-id="transformación-de-variables-categóricas">Transformación de variables categóricas</h4>
-<p>Para comenzar cambiaremos los valores categóricos de la variable emp_length por la cantidad de años como se puede observar en <a href="#tbl-cam-var-1">Table&nbsp;4</a>.</p>
+<p>Para comenzar cambiaremos los valores categóricos de la variable emp_length por la cantidad de años como se puede observar en <a href="#tbl-cam-var-1">Tabla&nbsp;4</a>.</p>
 <div class="cell" data-execution_count="6">
 <div class="cell-output cell-output-display" data-execution_count="41">
 <div id="tbl-cam-var-1" class="anchored">
 <table class="table table-sm table-striped">
-<caption>Table&nbsp;4: Cambio en variable emp_length</caption>
+<caption>Tabla&nbsp;4: Cambio en variable emp_length</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Valor</th>
@@ -532,12 +550,12 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuando, se pasará a eliminar la columna ‘pymnt_plan’ ya que solo tiene el 0.0019% de valores en yes frente al resto de no como se puede ver en <a href="#tbl-cam-var-2">Table&nbsp;5</a> por lo que no la consideraremos como muy aportante al modelo.</p>
+<p>Continuando, se pasará a eliminar la columna ‘pymnt_plan’ ya que solo tiene el 0.0019% de valores en yes frente al resto de no como se puede ver en <a href="#tbl-cam-var-2">Tabla&nbsp;5</a> por lo que no la consideraremos como muy aportante al modelo.</p>
 <div class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display" data-execution_count="42">
 <div id="tbl-cam-var-2" class="anchored">
 <table class="table table-sm table-striped">
-<caption>Table&nbsp;5: Eliminación variable pymnt_plan</caption>
+<caption>Tabla&nbsp;5: Eliminación variable pymnt_plan</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Valor</th>
@@ -565,13 +583,22 @@ div.csl-indent {
 </section>
 <section id="selección-de-variables-a-partir-de-woe-y-valor-de-información-iv" class="level2">
 <h2 class="anchored" data-anchor-id="selección-de-variables-a-partir-de-woe-y-valor-de-información-iv">Selección de variables a partir de WoE y Valor de Información (IV)</h2>
-<p>Como se puede ver en <a href="#tbl-cantidad-nulos-final">Table&nbsp;6</a> donde se encuentran las variables resultantes y la cantidad de nulos de cada uno debemos hacer una imputación, dicha imputación consistirá en reemplazar valores nulos por la moda, en el caso de las variables categóricas, y por la mediana en el caso de las continuas.</p>
+<p>El WOE y IV son criterios de selección que se usan en el campo de evaluación de riesgos y scorecards. WOE, o Weight of Evidence, se usa para medir la fuerza predictiva de un atributo o grupo de atributos, siendo esta una medida de la diferencia entre la proporción de “buenos” y “malos” en cada atributo, por ejemplo la probabilidad de que una persona con dicho atributo sea buena o mala. Así, este se calcula con el logaritmo natural de la división de la proporción de observaciones buscadas (“buenas”) sobre las no buscadas (“malas”) dada la cantidad de observaciones de cada una de las labels del atributo <span class="citation" data-cites="Creditriskscorecards">(<a href="#ref-Creditriskscorecards" role="doc-biblioref">Siddiqi 2012</a>)</span>. Por otra parte el IV, o Information Value, se mide como la sumatoria total de la proporción de observaciones “buenas” de la label i menos la proporción de observaciones “malas” de la label i por el valor del WOE calculado de la label i, con i perteneciente al conjunto de todas las labels posibles del atributo <span class="citation" data-cites="Creditriskscorecards">(<a href="#ref-Creditriskscorecards" role="doc-biblioref">Siddiqi 2012</a>)</span>, su función es determinar cuales agrupamientos realizados en el WOE tienen mayor fuerza predictiva, así dado el valor se tienen las posibles decisiones:</p>
+<ul>
+<li>Valores IV menores a 0.02: No mantener atributos pues no aportan a la predicción</li>
+<li>Valores IV desde 0.02 a 0.1: Mantener atributos pues aportan a la predicción de manera débil</li>
+<li>Valores IV desde 0.1 a 0.3: Mantener atributos pues aportan a la predicción de manera media</li>
+<li>Valores IV desde 0.3 a 0.5: Mantener atributos pues aportan a la predicción de manera fuerte</li>
+<li>Valores IV mayores a 0.5: Revisar atributos y mantenerlos con cautela pues están sobre prediciendo <span class="citation" data-cites="Creditriskscorecards">(<a href="#ref-Creditriskscorecards" role="doc-biblioref">Siddiqi 2012</a>)</span></li>
+</ul>
+<p>Antes de comenzar con la selección haremos imputación a los datos:</p>
+<p>Como se puede ver en <a href="#tbl-cantidad-nulos-final">Tabla&nbsp;6</a> donde se encuentran las variables resultantes y la cantidad de nulos de cada uno debemos hacer una imputación, dicha imputación consistirá en reemplazar valores nulos por la moda, en el caso de las variables categóricas, y por la mediana en el caso de las continuas.</p>
 <p>Dicha imputación se planteará en una función pero sólo se aplicará debidamente luego de dividir el conjunto de datos en datos de entrenamiento y datos de testeo.</p>
 <div class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display" data-execution_count="43">
 <div id="tbl-cantidad-nulos-final" class="anchored">
 <table class="table table-sm table-striped">
-<caption>Table&nbsp;6: Cantidad de nulos en variables resultatnes</caption>
+<caption>Tabla&nbsp;6: Cantidad de nulos en variables resultatnes</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Variable</th>
@@ -683,7 +710,7 @@ div.csl-indent {
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;7:  Vista inicial a datos de entrenamiento </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;7:  Vista inicial a datos de entrenamiento </caption>
   <thead>
     <tr>
       <th></th>
@@ -916,7 +943,7 @@ div.csl-indent {
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;8:  Vista inicial a datos de testeo </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;8:  Vista inicial a datos de testeo </caption>
   <thead>
     <tr>
       <th></th>
@@ -1143,18 +1170,18 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Por lo que terminaremos con 373028 datos de entrenamiento y 93257 datos de testeo como se puede ver en <a href="#tbl-x-train-inicial">Table&nbsp;7</a> y <a href="#tbl-x-test-inicial">Table&nbsp;8</a>.</p>
+<p>Por lo que terminaremos con 373028 datos de entrenamiento y 93257 datos de testeo como se puede ver en <a href="#tbl-x-train-inicial">Tabla&nbsp;7</a> y <a href="#tbl-x-test-inicial">Tabla&nbsp;8</a>.</p>
 <p>Así imputaremos cada conjunto y pasaremos a hacer selección de categorías con WoE y valor de información (IV) calculado donde seleccionaremos sólo aquellas que tengan valores por encima de 0.02 para este último.</p>
 <section id="análisis-de-iv-para-variables-categóricas" class="level3">
 <h3 class="anchored" data-anchor-id="análisis-de-iv-para-variables-categóricas">Análisis de IV para variables categóricas</h3>
-<p>Comenzaremos analizando la variable home_ownership que como se puede notar en <a href="#tbl-iv-home_ownership">Table&nbsp;9</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Comenzaremos analizando la variable home_ownership que como se puede notar en <a href="#tbl-iv-home_ownership">Tabla&nbsp;9</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="12">
 <div class="cell-output cell-output-display" data-execution_count="47">
 <div id="tbl-iv-home_ownership" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;9:  IV de home_ownership </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;9:  IV de home_ownership </caption>
   <thead>
     <tr>
       <th></th>
@@ -1254,14 +1281,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos analizando la variable verification_status que como se puede notar en <a href="#tbl-iv-verification_status">Table&nbsp;10</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos analizando la variable verification_status que como se puede notar en <a href="#tbl-iv-verification_status">Tabla&nbsp;10</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="13">
 <div class="cell-output cell-output-display" data-execution_count="48">
 <div id="tbl-iv-verification_status" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;10:  IV de verification_status </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;10:  IV de verification_status </caption>
   <thead>
     <tr>
       <th></th>
@@ -1331,14 +1358,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Así analizando la variable purpose que como se puede notar en <a href="#tbl-iv-purpose">Table&nbsp;11</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Así analizando la variable purpose que como se puede notar en <a href="#tbl-iv-purpose">Tabla&nbsp;11</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="14">
 <div class="cell-output cell-output-display" data-execution_count="49">
 <div id="tbl-iv-purpose" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;11:  IV de purpose </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;11:  IV de purpose </caption>
   <thead>
     <tr>
       <th></th>
@@ -1573,14 +1600,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Así analizando la variable grade que como se puede notar en <a href="#tbl-iv-grade">Table&nbsp;12</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Así analizando la variable grade que como se puede notar en <a href="#tbl-iv-grade">Tabla&nbsp;12</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="15">
 <div class="cell-output cell-output-display" data-execution_count="50">
 <div id="tbl-iv-grade" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;12:  IV de grade </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;12:  IV de grade </caption>
   <thead>
     <tr>
       <th></th>
@@ -1710,14 +1737,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Así analizando la variable term que como se puede notar en <a href="#tbl-iv-term">Table&nbsp;13</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Así analizando la variable term que como se puede notar en <a href="#tbl-iv-term">Tabla&nbsp;13</a> tiene un IV mayor de 0.02, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display" data-execution_count="51">
 <div id="tbl-iv-term" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;13:  IV de term </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;13:  IV de term </caption>
   <thead>
     <tr>
       <th></th>
@@ -1772,12 +1799,12 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Por lo que concluimos seleccionando todas las variables categóricas como se puede ver en el resumen de <a href="#tbl-iv-cat-res">Table&nbsp;14</a>.</p>
+<p>Por lo que concluimos seleccionando todas las variables categóricas como se puede ver en el resumen de <a href="#tbl-iv-cat-res">Tabla&nbsp;14</a>.</p>
 <div class="cell" data-execution_count="17">
 <div class="cell-output cell-output-display" data-execution_count="52">
 <div id="tbl-iv-cat-res" class="anchored">
 <table class="table table-sm table-striped">
-<caption>Table&nbsp;14: IV de variables categóricas</caption>
+<caption>Tabla&nbsp;14: IV de variables categóricas</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Variable</th>
@@ -1818,7 +1845,7 @@ div.csl-indent {
 <div class="cell-output cell-output-display" data-execution_count="53">
 <div id="tbl-iv-res-cont" class="anchored">
 <table class="table table-sm table-striped">
-<caption>Table&nbsp;15: Resumen de IV para variables continuas</caption>
+<caption>Tabla&nbsp;15: Resumen de IV para variables continuas</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Variable</th>
@@ -1899,15 +1926,15 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Como se puede observar en <a href="#tbl-iv-res-cont">Table&nbsp;15</a> hay algunas variables cuyo valor de información es inf, esto se debe a la cantidad de observaciones positivas o negativas en algunos de los intervalos. Para controlar esto haremos el análisis de aquellas variables cuidando de posibles outliers que dificulten dicha división en intervalos</p>
-<p>Así comenzaremos analizando la variable annual_inc que como se puede notar en <a href="#tbl-iv-annual_inc">Table&nbsp;16</a> tiene un IV mayor de 0.02 considerando valores menores o iguales a 150000, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Como se puede observar en <a href="#tbl-iv-res-cont">Tabla&nbsp;15</a> hay algunas variables cuyo valor de información es inf, esto se debe a la cantidad de observaciones positivas o negativas en algunos de los intervalos. Para controlar esto haremos el análisis de aquellas variables cuidando de posibles outliers que dificulten dicha división en intervalos</p>
+<p>Así comenzaremos analizando la variable annual_inc que como se puede notar en <a href="#tbl-iv-annual_inc">Tabla&nbsp;16</a> tiene un IV mayor de 0.02 considerando valores menores o iguales a 150000, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="19">
 <div class="cell-output cell-output-display" data-execution_count="54">
 <div id="tbl-iv-annual_inc" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;16:  IV de annual_inc </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;16:  IV de annual_inc </caption>
   <thead>
     <tr>
       <th></th>
@@ -2232,14 +2259,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable delinq_2yrs que como se puede notar en <a href="#tbl-iv-delinq_2yrs">Table&nbsp;17</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 10, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable delinq_2yrs que como se puede notar en <a href="#tbl-iv-delinq_2yrs">Tabla&nbsp;17</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 10, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="20">
 <div class="cell-output cell-output-display" data-execution_count="55">
 <div id="tbl-iv-delinq_2yrs" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;17:  IV de delinq_2yrs </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;17:  IV de delinq_2yrs </caption>
   <thead>
     <tr>
       <th></th>
@@ -2429,14 +2456,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable inq_last_6mths que como se puede notar en <a href="#tbl-iv-inq_last_6mths">Table&nbsp;18</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 5, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable inq_last_6mths que como se puede notar en <a href="#tbl-iv-inq_last_6mths">Tabla&nbsp;18</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 5, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="21">
 <div class="cell-output cell-output-display" data-execution_count="56">
 <div id="tbl-iv-inq_last_6mths" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;18:  IV de inq_last_6mths </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;18:  IV de inq_last_6mths </caption>
   <thead>
     <tr>
       <th></th>
@@ -2596,14 +2623,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable open_acc que como se puede notar en <a href="#tbl-iv-open_acc">Table&nbsp;19</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 28, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable open_acc que como se puede notar en <a href="#tbl-iv-open_acc">Tabla&nbsp;19</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 28, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="22">
 <div class="cell-output cell-output-display" data-execution_count="57">
 <div id="tbl-iv-open_acc" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;19:  IV de open_acc </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;19:  IV de open_acc </caption>
   <thead>
     <tr>
       <th></th>
@@ -2928,14 +2955,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable pub_rec que como se puede notar en <a href="#tbl-iv-pub_rec">Table&nbsp;20</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 0.9, por lo que no la mantendremos para el ajuste del modelo pues además, como se puede notar en la misma tabla, es complicado realizar una división en intervalos suficiente para que dicha variable entregue un IV aceptable.</p>
+<p>Continuaremos con la variable pub_rec que como se puede notar en <a href="#tbl-iv-pub_rec">Tabla&nbsp;20</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 0.9, por lo que no la mantendremos para el ajuste del modelo pues además, como se puede notar en la misma tabla, es complicado realizar una división en intervalos suficiente para que dicha variable entregue un IV aceptable.</p>
 <div class="cell" data-execution_count="23">
 <div class="cell-output cell-output-display" data-execution_count="58">
 <div id="tbl-iv-pub_rec" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;20:  IV de pub_rec </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;20:  IV de pub_rec </caption>
   <thead>
     <tr>
       <th></th>
@@ -3260,14 +3287,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable revol_bal que como se puede notar en <a href="#tbl-iv-revol_bal">Table&nbsp;21</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 60000, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable revol_bal que como se puede notar en <a href="#tbl-iv-revol_bal">Tabla&nbsp;21</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 60000, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="24">
 <div class="cell-output cell-output-display" data-execution_count="59">
 <div id="tbl-iv-revol_bal" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;21:  IV de revol_bal </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;21:  IV de revol_bal </caption>
   <thead>
     <tr>
       <th></th>
@@ -3592,14 +3619,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable revol_util que como se puede notar en <a href="#tbl-iv-revol_util">Table&nbsp;22</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 105, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable revol_util que como se puede notar en <a href="#tbl-iv-revol_util">Tabla&nbsp;22</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 105, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="25">
 <div class="cell-output cell-output-display" data-execution_count="60">
 <div id="tbl-iv-revol_util" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;22:  IV de revol_util </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;22:  IV de revol_util </caption>
   <thead>
     <tr>
       <th></th>
@@ -3924,14 +3951,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable last_pymnt_amnt que como se puede notar en <a href="#tbl-iv-last_pymnt_amnt">Table&nbsp;23</a> tiene un IV en infinito incluso luego de haber manejado algunos outliers, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable last_pymnt_amnt que como se puede notar en <a href="#tbl-iv-last_pymnt_amnt">Tabla&nbsp;23</a> tiene un IV en infinito incluso luego de haber manejado algunos outliers, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="26">
 <div class="cell-output cell-output-display" data-execution_count="61">
 <div id="tbl-iv-last_pymnt_amnt" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;23:  IV de last_pymnt_amnt </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;23:  IV de last_pymnt_amnt </caption>
   <thead>
     <tr>
       <th></th>
@@ -4256,14 +4283,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable collections_12_mths_ex_med que como se puede notar en <a href="#tbl-iv-collections_12_mths_ex_med">Table&nbsp;24</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 2, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable collections_12_mths_ex_med que como se puede notar en <a href="#tbl-iv-collections_12_mths_ex_med">Tabla&nbsp;24</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 2, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="27">
 <div class="cell-output cell-output-display" data-execution_count="62">
 <div id="tbl-iv-collections_12_mths_ex_med" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;24:  IV de collections_12_mths_ex_med </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;24:  IV de collections_12_mths_ex_med </caption>
   <thead>
     <tr>
       <th></th>
@@ -4333,14 +4360,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable acc_now_delinq que como se puede notar en <a href="#tbl-iv-acc_now_delinq">Table&nbsp;25</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 0, por lo que no la mantendremos para el ajuste del modelo pues además, como se puede notar en la misma tabla, es complicado realizar una división en intervalos suficiente para que dicha variable entregue un IV aceptable.</p>
+<p>Continuaremos con la variable acc_now_delinq que como se puede notar en <a href="#tbl-iv-acc_now_delinq">Tabla&nbsp;25</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 0, por lo que no la mantendremos para el ajuste del modelo pues además, como se puede notar en la misma tabla, es complicado realizar una división en intervalos suficiente para que dicha variable entregue un IV aceptable.</p>
 <div class="cell" data-execution_count="28">
 <div class="cell-output cell-output-display" data-execution_count="63">
 <div id="tbl-iv-acc_now_delinq" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;25:  IV de acc_now_delinq </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;25:  IV de acc_now_delinq </caption>
   <thead>
     <tr>
       <th></th>
@@ -4665,14 +4692,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable tot_coll_amt que como se puede notar en <a href="#tbl-iv-tot_coll_amt">Table&nbsp;26</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 750, por lo que no la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable tot_coll_amt que como se puede notar en <a href="#tbl-iv-tot_coll_amt">Tabla&nbsp;26</a> tiene un IV menor a 0.02 considerando valores menores o iguales a 750, por lo que no la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="29">
 <div class="cell-output cell-output-display" data-execution_count="64">
 <div id="tbl-iv-tot_coll_amt" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;26:  IV de tot_coll_amt </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;26:  IV de tot_coll_amt </caption>
   <thead>
     <tr>
       <th></th>
@@ -4997,14 +5024,14 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Continuaremos con la variable tot_cur_bal que como se puede notar en <a href="#tbl-iv-tot_cur_bal">Table&nbsp;27</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 500000, por lo que la mantendremos para el ajuste del modelo.</p>
+<p>Continuaremos con la variable tot_cur_bal que como se puede notar en <a href="#tbl-iv-tot_cur_bal">Tabla&nbsp;27</a> tiene un IV mayor a 0.02 considerando valores menores o iguales a 500000, por lo que la mantendremos para el ajuste del modelo.</p>
 <div class="cell" data-execution_count="30">
 <div class="cell-output cell-output-display" data-execution_count="65">
 <div id="tbl-iv-tot_cur_bal" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;27:  IV de tot_cur_bal </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;27:  IV de tot_cur_bal </caption>
   <thead>
     <tr>
       <th></th>
@@ -5406,31 +5433,31 @@ div.csl-indent {
 </div>
 <p>Así terminamos con un total de 12 variables categóricas y numéricas:</p>
 <ul>
-<li>‘purpose’</li>
-<li>‘verification_status’</li>
-<li>‘home_ownership’</li>
-<li>‘tot_cur_bal’</li>
-<li>‘dti’</li>
-<li>‘inq_last_6mths’</li>
-<li>‘out_prncp’</li>
-<li>‘int_rate’</li>
-<li>‘term’</li>
-<li>‘annual_inc’</li>
-<li>‘revol_util’</li>
-<li>‘grade’</li>
+<li>‘purpose’: El propósito por el que se pide el crédito</li>
+<li>‘verification_status’: Indica si los ingresos fueron verificados por el Lending Club</li>
+<li>‘home_ownership’: El estado actual de propiedad de la vivienda del prestatario</li>
+<li>‘tot_cur_bal’: El balance actual total de todas las cuentas</li>
+<li>‘dti’: Una relación calculada usando los pagos totales de deuda mensuales del prestatario sobre el total de obligaciones de deuda, sin incluir la hipoteca y el préstamo de LC solicitado, dividido por el total de ingresos mensuales autodeclarados del prestatario</li>
+<li>‘inq_last_6mths’: Número de consultas en los últimos 6 meses (excluyendo consultas de hipotecas)</li>
+<li>‘out_prncp’: Capital restante pendiente por el monto total financiado</li>
+<li>‘int_rate’: Tasa de interés en el préstamo</li>
+<li>‘term’: Número de pagos al préstamo. Sólo toma dos valores: 36 meses o 60 meses</li>
+<li>‘annual_inc’: Los ingresos anuales autodeclarados del prestatario</li>
+<li>‘revol_util’: Tasa de utilización del préstamo</li>
+<li>‘grade’: Grado del préstamo asginado en la carta de crédito</li>
 </ul>
 </section>
 </section>
 <section id="ajuste-del-modelo-y-realización-de-scorecard" class="level2">
 <h2 class="anchored" data-anchor-id="ajuste-del-modelo-y-realización-de-scorecard">Ajuste del modelo y realización de Scorecard</h2>
-<p>Para continuar con el ajuste del modelo ya con las variables escogidas se hará una pipeline que tratará el conjunto de datos de diferentes maneras: Para las variables continuas se crearán variables dummies de intervalos, el último de ellos tendiendo a infinito, y se transformará el valor de la variable de cada observación en 1 y 0’s de acuerdo al intervalo en el que caiga dicho valor. Para las variables categórica simplemente se crearán variabes dummies y se procederá como un OneHotEncoding normal. Esto se puede observar en <a href="#tbl-pre-datos-1">Table&nbsp;28</a>.</p>
+<p>Para continuar con el ajuste del modelo ya con las variables escogidas se hará una pipeline que tratará el conjunto de datos de diferentes maneras: Para las variables continuas se crearán variables dummies de intervalos, el último de ellos tendiendo a infinito, y se transformará el valor de la variable de cada observación en 1 y 0’s de acuerdo al intervalo en el que caiga dicho valor. Para las variables categórica simplemente se crearán variabes dummies y se procederá como un OneHotEncoding normal. Esto se puede observar en <a href="#tbl-pre-datos-1">Tabla&nbsp;28</a>.</p>
 <div class="cell" data-execution_count="31">
 <div class="cell-output cell-output-display" data-execution_count="66">
 <div id="tbl-pre-datos-1" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;28:  Preprocesamiento total de datos </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;28:  Preprocesamiento total de datos </caption>
   <thead>
     <tr>
       <th></th>
@@ -5666,7 +5693,7 @@ div.csl-indent {
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;29:  Resumen del modelo entrenado </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;29:  Resumen del modelo entrenado </caption>
   <thead>
     <tr>
       <th></th>
@@ -5737,33 +5764,40 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Ya con el modelo entrenado y con coeficientes para cada una de las variables como se puede ver en <a href="#tbl-model-summary">Table&nbsp;29</a> se procederán a analizar resultados del ajuste:</p>
+<p>Ya con el modelo entrenado y con coeficientes para cada una de las variables como se puede ver en <a href="#tbl-model-summary">Tabla&nbsp;29</a> se procederán a analizar resultados del ajuste:</p>
 <div id="fig-matriz-conf" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="fig_m1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2: Matriz de confusion</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;2: Matriz de confusion</figcaption><p></p>
 </figure>
 </div>
-<p>Como se puede ver en <a href="#fig-matriz-conf">Figure&nbsp;2</a> el modelo ajustado es muy bueno para predecir verdaderos positivos, pero no para verdaderos negativos que los termina pasando como falsos positivos, lo que en contexto significaría otorgar créditos a muchas personas.</p>
+<p>Como se puede ver en la matriz de confusión, <a href="#fig-matriz-conf">Figura&nbsp;2</a>:</p>
+<ul>
+<li>Arriba a la izquierda el porcentaje de los verdaderos negativos clasificados por el modelo.</li>
+<li>Arriba a la derecha el porcentaje de los falsos positivos que clasificó el modelo.</li>
+<li>Abajo a la izquierda el porcentaje de los falsos negativos clasificados por el modelo.</li>
+<li>Abajo a la derecha el porcentaje de verdaderos positivos que clasificó el modelo.</li>
+</ul>
+<p>Entiéndase como positivo (1) una persona que cumplió con sus obligaciones financieras y negativo (0) una persona que incumplió éstas. Con esto en mente, se puede ver que el modelo ajustado es muy bueno para predecir verdaderos positivos, pero no para verdaderos negativos que los termina pasando como falsos positivos, lo que en contexto significaría otorgar créditos a muchas personas.</p>
 <div id="fig-roc-curve-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="fig_m2.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;3: Curva ROC</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;3: Curva ROC</figcaption><p></p>
 </figure>
 </div>
-<p>En <a href="#fig-roc-curve-1">Figure&nbsp;3</a> podemos observar el rendimiento de la curva de roc donde se nota que la convergencia a uno es relativamente rápida. Por otra parte obtenemos un valor AUROC de 0.7751, es decir la probabilidad de que a una persona le aprueben un crédito y que en efecto cumple las caracteristicas para ser aprobado es del 77%.</p>
+<p>En <a href="#fig-roc-curve-1">Figura&nbsp;3</a> se puede observar la curva ROC donde se tiene un 77% de efectividad de clasificación, es decir, de que el modelo prediga que a una persona le acepten o le otorguen el crédito cuando en realidad cumple las condiciones y que se lo rechacen cuando no las cumple.</p>
 </section>
 <section id="creación-de-scorecard" class="level3">
 <h3 class="anchored" data-anchor-id="creación-de-scorecard">Creación de scorecard</h3>
 <p>Para comenzar, aquellos coeficientes obtenidos anteriormente se deben escalar con respecto a la escala escogida, en este caso vamos a basarnos en los puntajes establecidos por FICO que se encuentran en el intervalo 300-850. Una vez escalados los redondeamos para obtener el score preliminar.</p>
-<p>Al calcular el máximo y el mínimo valor obtenido con el score preliminar (<a href="#tbl-scard-1">Table&nbsp;30</a>) encontramos que el máximo es 851 que se pasa de el limite establecido inicialmente, para corregir esto sin afectar mucho el modelo inicial vamos a encontrar la máxima diferencia entre el score calculado y el preliminar entre los mayores valores de cada categoría, y a este le restamos uno. Este valor corresponde a inq_last_6mths:0 para el que el score calculado es 13.562276 y el score preliminar es 14, teniendo una diferencia de 0.43, este valor lo cambiaremos a 13 para que el máximo valor obtenido sea 850 en lugar de 851 sin afectar mucho a los datos preliminares, dicha corrección se puede ver en <a href="#tbl-scard-f">Table&nbsp;31</a>.</p>
+<p>Al calcular el máximo y el mínimo valor obtenido con el score preliminar (<a href="#tbl-scard-1">Tabla&nbsp;30</a>) encontramos que el máximo es 851 que se pasa de el limite establecido inicialmente, para corregir esto sin afectar mucho el modelo inicial vamos a encontrar la máxima diferencia entre el score calculado y el preliminar entre los mayores valores de cada categoría, y a este le restamos uno. Este valor corresponde a inq_last_6mths:0 para el que el score calculado es 13.562276 y el score preliminar es 14, teniendo una diferencia de 0.43, este valor lo cambiaremos a 13 para que el máximo valor obtenido sea 850 en lugar de 851 sin afectar mucho a los datos preliminares, dicha corrección se puede ver en <a href="#tbl-scard-f">Tabla&nbsp;31</a>.</p>
 <div class="cell" data-execution_count="34">
 <div class="cell-output cell-output-display" data-execution_count="69">
 <div id="tbl-scard-1" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;30:  Scorecard preliminar </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;30:  Scorecard preliminar </caption>
   <thead>
     <tr>
       <th></th>
@@ -5892,7 +5926,7 @@ div.csl-indent {
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;31:  Scorecard final </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;31:  Scorecard final </caption>
   <thead>
     <tr>
       <th></th>
@@ -6035,22 +6069,22 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Teniendo en cuenta esto y calculando el scorecard para cada uno de los datos que se usaron para entrenar el modelo, obtenemos la distribución <a href="#fig-scard-distr">Figure&nbsp;4</a>.</p>
+<p>Teniendo en cuenta esto y calculando el scorecard para cada uno de los datos que se usaron para entrenar el modelo, obtenemos la distribución <a href="#fig-scard-distr">Figura&nbsp;4</a>.</p>
 <div id="fig-scard-distr" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="fig_2_scard_distr.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4: Analisis distribución dado el Scorecard</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;4: Analisis distribución dado el Scorecard</figcaption><p></p>
 </figure>
 </div>
-<p>De <a href="#fig-scard-distr">Figure&nbsp;4</a> podemos notar que la media del scores es de 456, lo cual se encuentra en el rango más bajo de los puntajes crediticios, ya que está por debajo del quantil 25, además se observa que la distribución del score es bimodal ya que tiene dos picos, uno alrededor de 500 y el segundo alrededor de los 600.</p>
+<p>De <a href="#fig-scard-distr">Figura&nbsp;4</a> podemos notar que la media del scores es de 456, lo cual se encuentra en el rango más bajo de los puntajes crediticios, ya que está por debajo del quantil 25, además se observa que la distribución del score es bimodal ya que tiene dos picos, uno alrededor de 500 y el segundo alrededor de los 600.</p>
 </section>
-<section id="variables-más-riesgosas" class="level3">
-<h3 class="anchored" data-anchor-id="variables-más-riesgosas">Variables más riesgosas</h3>
-<p>En la gráfica <a href="#fig-riesgo">Figure&nbsp;5</a> podemos observar el valor que aporta cada característica al scorcad final, teniendo en cuenta que el valor de referencia es el intercepto. En la gráfica superior podemos ver que la característica que más resta puntaje al cliente en su score es out_pmcp&gt;1.286, seguida por los grados E y F, también se puede observar que la que menos le aporta negativamente es dti:15.196-19.195. En la gráfica inferior se tienen los diferentes pesos que aportan las características a los prestarios de manera positiva, por ejemplo el grado A es la que tiene un aporte de 54 aproximadamente, seguida por int_rate: &lt; 7.071 y grado B, además se ve que la que tiene un menor aporte de manera positiva es reovol_ultiil:0.4-0.5.</p>
+<section id="variables-que-mejor-predicen-el-riesgo" class="level3">
+<h3 class="anchored" data-anchor-id="variables-que-mejor-predicen-el-riesgo">Variables que mejor predicen el riesgo</h3>
+<p>En la gráfica <a href="#fig-riesgo">Figura&nbsp;5</a> podemos observar el valor que aporta cada característica al scorecard final, teniendo en cuenta que el valor de referencia es el intercepto. En la gráfica superior podemos ver que la característica que más resta puntaje al cliente en su score es out_pmcp&gt;1.286, seguida por los grados E y F, también se puede observar que la que menos le aporta negativamente es dti:15.196-19.195. En la gráfica inferior se tienen los diferentes pesos que aportan las características a los prestarios de manera positiva, por ejemplo el grado A es la que tiene un aporte de 54 aproximadamente, seguida por int_rate: &lt; 7.071 y grado B, además se ve que la que tiene un menor aporte de manera positiva es revol_util:0.4-0.5. Por otra parte se puede notar que a menor ingresos anuales declarados menor es la puntuación otorgada, excepto para un caso en específico donde annual_inc:120.379-150.000 otorga más puntuación que annual_inc&gt;150.000.</p>
 <div id="fig-riesgo" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="fig_3_riesgo.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5: Analisis de variables más riesgoas</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;5: Analisis de variables más riesgosas</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -6065,19 +6099,28 @@ div.csl-indent {
 Andreas C. Müller, Sarah Guido. 2016. <em>Introduction to Machine Learning with Python</em>. O’Reilly Media, Inc.
 </div>
 <div id="ref-Data1" class="csl-entry" role="doc-biblioentry">
-Asad Mumtaz. 2020. <span>“How to Develop a Credit Risk Model and Scorecard.”</span> 2020. <a href="https://towardsdatascience.com/how-to-develop-a-credit-risk-model-and-scorecard-91335fc01f03">https://towardsdatascience.com/how-to-develop-a-credit-risk-model-and-scorecard-91335fc01f03</a>.
+Asad Mumtaz. 2020. <span>«How to Develop a Credit Risk Model and Scorecard»</span>. 2020. <a href="https://towardsdatascience.com/how-to-develop-a-credit-risk-model-and-scorecard-91335fc01f03">https://towardsdatascience.com/how-to-develop-a-credit-risk-model-and-scorecard-91335fc01f03</a>.
 </div>
 <div id="ref-Creditriskanalytics" class="csl-entry" role="doc-biblioentry">
-Bart Baesens, Harald Scheule, Daniel Roesch. 2016. <em>Credit Risk Analytics: Measurement Techniques, Applications, and Examples in SAS</em>. John Wiley &amp; Sons.
+Bart Baesens, Harald Scheule, Daniel Roesch. 2016. <em>Credit risk analytics: Measurement techniques, applications, and examples in SAS</em>. John Wiley &amp; Sons.
+</div>
+<div id="ref-PagNews2" class="csl-entry" role="doc-biblioentry">
+Deepanshu Bhalla. 2019. <span>«A COMPLETE GUIDE TO CREDIT RISK MODELLING»</span>. 2019. <a href="https://www.listendata.com/2019/08/credit-risk-modelling.html#id-8eb70a">https://www.listendata.com/2019/08/credit-risk-modelling.html#id-8eb70a</a>.
 </div>
 <div id="ref-HandsOn" class="csl-entry" role="doc-biblioentry">
-Géron, Aurélien. 2019. <em>Hands-on Machine Learning with Scikit-Learn, Keras, and TensorFlow, 2nd Edition</em>. O’Reilly Media, Inc.
+Géron, Aurélien. 2019. <em>Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow, 2nd Edition</em>. O’Reilly Media, Inc.
+</div>
+<div id="ref-DataWebsite" class="csl-entry" role="doc-biblioentry">
+lendingclub. 2017. <span>«Lending Club Loan Data 2007-11»</span>. 2017. <a href="https://data.world/jaypeedevlin/lending-club-loan-data-2007-11">https://data.world/jaypeedevlin/lending-club-loan-data-2007-11</a>.
 </div>
 <div id="ref-CreditScoring" class="csl-entry" role="doc-biblioentry">
-Lyn Thomas, David Edelman, Jonathan Crook. 2002. <em>Credit Scoring and Its Applications.</em> David Marshall.
+Lyn Thomas, David Edelman, Jonathan Crook. 2002. <em>Credit Scoring and its Applications.</em> David Marshall.
+</div>
+<div id="ref-PagNews1" class="csl-entry" role="doc-biblioentry">
+Nathalia Morales Arévalo. 2022. <span>«Bancos con mayores y menores índices de cartera vencida con corte a junio»</span>. 2022. <a href="https://www.larepublica.co/finanzas/bancos-con-mayores-y-menores-indices-de-cartera-vencida-con-corte-a-junio-de-2022-3453315">https://www.larepublica.co/finanzas/bancos-con-mayores-y-menores-indices-de-cartera-vencida-con-corte-a-junio-de-2022-3453315</a>.
 </div>
 <div id="ref-Creditriskscorecards" class="csl-entry" role="doc-biblioentry">
-Siddiqi, Naeem. 2012. <em>Credit Risk Scorecards: Developing and Implementing Intelligent Credit Scoring</em>. John Wiley &amp; Sons.
+Siddiqi, Naeem. 2012. <em>Credit risk scorecards: developing and implementing intelligent credit scoring</em>. John Wiley &amp; Sons.
 </div>
 </div></section></div></main>
 <!-- /main column -->
@@ -6234,7 +6277,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
+    button.setAttribute("title", "Copiada");
     setTimeout(function() {
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
